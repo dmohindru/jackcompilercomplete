@@ -92,6 +92,10 @@ void compileClass()
 }
 void compileClassVarDec()
 {
+	//variables used for define function in symbol table module
+	char nameOfVar[100];
+	char typeOfVar[20];
+	kind kindOfVar;
 	//check for static or field keyword code block
 	if(!hasMoreTokens()) //if no more tokens return to compileClass method
 	{			
@@ -108,11 +112,13 @@ void compileClassVarDec()
 					fprintf(vmFile, "%s<classVarDec>\n", indentString);
 					strcat(indentString, "  "); //increase the indent
 					fprintf(vmFile, "%s<keyword> static </keyword>\n", indentString);
+					kindOfVar = STATIC_SMBL;
 					break;
 				case FIELD:
 					fprintf(vmFile, "%s<classVarDec>\n", indentString);
 					strcat(indentString, "  ");
-					fprintf(vmFile, "%s<keyword> field </keyword>\n", indentString); 
+					fprintf(vmFile, "%s<keyword> field </keyword>\n", indentString);
+					kindOfVar = FIELD_SMBL; 
 					break;
 				default:   //static or field keyword not found return to compileClass Method
 					return;
@@ -142,12 +148,15 @@ void compileClassVarDec()
 			{
 				case INT:
 					fprintf(vmFile, "%s<keyword> int </keyword>\n", indentString);
+					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
 					fprintf(vmFile, "%s<keyword> char </keyword>\n", indentString);
+					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
 					fprintf(vmFile, "%s<keyword> boolean </keyword>\n", indentString);
+					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
 					printf("Variable declareation unknown 'type' at line %d\n", currentToken->line);
@@ -159,6 +168,7 @@ void compileClassVarDec()
 		else if(tokenType() == IDENTIFIER)
 		{
 			fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			strcpy(typeOfVar, identifier());
 			
 		}
 		else  //not found legal keyword or identifier in 'type' decleration
@@ -183,6 +193,7 @@ void compileClassVarDec()
 		if(tokenType() == IDENTIFIER)
 		{
 			fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			strcpy(nameOfVar, identifier());
 		}
 		else //not a valid variable name token
 		{
@@ -192,6 +203,8 @@ void compileClassVarDec()
 			exit(1);
 		}
 	}
+	//we have got all the details to define a symbol call define
+	define(nameOfVar, typeOfVar, kindOfVar);
 	//below block of code for occurance of code like in next line
 	//(',' varName)* ';' block
 	if(!hasMoreTokens())
@@ -208,6 +221,8 @@ void compileClassVarDec()
 		{
 			while(1)
 			{
+				//first clear nameOfVar for define a new symbol
+				memset(nameOfVar, 0, 20);
 				if(symbol() == ';')
 				{
 					fprintf(vmFile, "%s<symbol> ; </symbol>\n", indentString);
@@ -230,6 +245,9 @@ void compileClassVarDec()
 					if(tokenType() == IDENTIFIER)
 					{
 						fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+						strcpy(nameOfVar, identifier());
+						//we got the name call define
+						define(nameOfVar, typeOfVar, kindOfVar);
 					}
 					else //not a valid variable name
 					{
@@ -467,6 +485,10 @@ void compileSubroutine()
 }
 void compileParameterList()
 {
+	//variables used for define function in symbol table module
+	char nameOfVar[100];
+	char typeOfVar[20];
+	//kind kindOfVar;
 	//make sure to reduce the indent before returning
 	if(!hasMoreTokens()) 
 	{
@@ -486,16 +508,19 @@ void compileParameterList()
 					fprintf(vmFile, "%s<parameterList>\n", indentString);
 					strcat(indentString, "  ");//increase the indent
 					fprintf(vmFile, "%s<keyword> int </keyword>\n", indentString);
+					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
 					fprintf(vmFile, "%s<parameterList>\n", indentString);
 					strcat(indentString, "  ");//increase the indent
 					fprintf(vmFile, "%s<keyword> char </keyword>\n", indentString);
+					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
 					fprintf(vmFile, "%s<parameterList>\n", indentString);
 					strcat(indentString, "  ");//increase the indent
 					fprintf(vmFile, "%s<keyword> boolean </keyword>\n", indentString);
+					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
 					printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
@@ -509,6 +534,7 @@ void compileParameterList()
 			fprintf(vmFile, "%s<parameterList>\n", indentString);
 			strcat(indentString, "  ");//increase the indent
 			fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			strcpy(typeOfVar, identifier());
 		}
 		else if(tokenType() == SYMBOL && symbol() == ')') //we just found an empty parameter list
 		{
@@ -539,6 +565,8 @@ void compileParameterList()
 		if(tokenType() == IDENTIFIER)
 		{
 			fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			strcpy(nameOfVar, identifier());
+			define(nameOfVar, typeOfVar, ARG_SMBL);
 		}
 		else //not a valid variable name token
 		{
@@ -562,6 +590,9 @@ void compileParameterList()
 		{
 			advance();
 		}
+		//clear previously set variables
+		memset(nameOfVar, 0, 100);
+		memset(typeOfVar, 0, 100);
 		//check for symbol ','
 		if(tokenType() == SYMBOL)
 		{
@@ -599,12 +630,15 @@ void compileParameterList()
 			{
 				case INT:
 					fprintf(vmFile, "%s<keyword> int </keyword>\n", indentString);
+					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
 					fprintf(vmFile, "%s<keyword> char </keyword>\n", indentString);
+					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
 					fprintf(vmFile, "%s<keyword> boolean </keyword>\n", indentString);
+					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
 					printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
@@ -616,6 +650,7 @@ void compileParameterList()
 		else if(tokenType() == IDENTIFIER)
 		{
 			fprintf(vmFile, "%s<identifier> %s </identifer>\n", indentString, identifier());
+			strcpy(typeOfVar, identifier());
 		}
 		else
 		{
@@ -639,6 +674,8 @@ void compileParameterList()
 		if(tokenType() == IDENTIFIER)
 		{
 			fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			strcpy(nameOfVar, identifier());
+			define(nameOfVar, typeOfVar, ARG_SMBL);
 		}
 		else //not a valid variable name token
 		{
@@ -652,6 +689,9 @@ void compileParameterList()
 }
 void compileVarDec()
 {
+	//variables used for define function in symbol table module
+	char nameOfVar[100];
+	char typeOfVar[20];
 	//check for var keyword code block
 	if(!hasMoreTokens()) //if no more tokens return to compileClass method
 	{			
@@ -697,12 +737,15 @@ void compileVarDec()
 			{
 				case INT:
 					fprintf(vmFile, "%s<keyword> int </keyword>\n", indentString);
+					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
 					fprintf(vmFile, "%s<keyword> char </keyword>\n", indentString);
+					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
 					fprintf(vmFile, "%s<keyword> boolean </keyword>\n", indentString);
+					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
 					printf("Variable declareation unknown 'type' at line %d\n", currentToken->line);
@@ -714,6 +757,7 @@ void compileVarDec()
 		else if(tokenType() == IDENTIFIER)
 		{
 			fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			strcpy(typeOfVar, identifier());
 		}
 		else  //not found legal keyword or identifier in 'type' decleration
 		{
@@ -737,6 +781,8 @@ void compileVarDec()
 		if(tokenType() == IDENTIFIER)
 		{
 			fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			strcpy(nameOfVar, identifier());
+			define(nameOfVar, typeOfVar, VAR_SMBL);
 		}
 		else //not a valid variable name token
 		{
@@ -762,6 +808,8 @@ void compileVarDec()
 		{
 			while(1)
 			{
+				//set the previously set nameOfVar variable
+				memset(nameOfVar, 0, 100);
 				if(symbol() == ';')
 				{
 					fprintf(vmFile, "%s<symbol> ; </symbol>\n", indentString);
@@ -784,6 +832,8 @@ void compileVarDec()
 					if(tokenType() == IDENTIFIER)
 					{
 						fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+						strcpy(nameOfVar, identifier());
+						define(nameOfVar, typeOfVar, ARG_SMBL);
 					}
 					else //not a valid variable name
 					{
