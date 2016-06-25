@@ -309,6 +309,8 @@ void compileSubroutine()
 				printf("Not found any thing\n");
 				return;
 		}
+		//here we can safely start a new subroutine symbol table
+		startSubroutine();
 	}
 	else //if the token type in not keyword this may be possible some other statement
 	{	  //return to compileClass method	

@@ -425,7 +425,7 @@ void addTokenToList(char *strToken)
 		temp->line = filelineno;
 		temp->next = 0;
 		current->next = temp;
-		current = temp;
+		current = temp; //this line need attention
 	}
 }
 int isJackValidInt(char *strToNum)
