@@ -122,6 +122,7 @@ void clearSymbolTable(int smblTable) //smblTable=0 for class symbol table, smblT
 void displaySymbolTable(int smblTable) //smblTable=0 for class symbol table, smblTable=1 for method symbol table
 {
 	symbolTable *entry;
+	char kindSymbol[10];
 	if(smblTable == 0)
 	{
 		entry = classSmblTable;
@@ -131,9 +132,30 @@ void displaySymbolTable(int smblTable) //smblTable=0 for class symbol table, smb
 		entry = methodSmblTable;
 	}
 	//print headers here
+	printf("Name                Type                Kind      #  \n");
 	while(entry!=0)
 	{
+		memset(kindSymbol, 0, 10);
+		switch(entry->kindType)
+		{
+			case STATIC_SMBL:
+				strcpy(kindSymbol, "static");
+				break;
+			case FIELD_SMBL:
+				strcpy(kindSymbol, "field");
+				break;
+			case ARG_SMBL:
+				strcpy(kindSymbol, "argument");
+				break;
+			case VAR_SMBL:
+				strcpy(kindSymbol, "var");
+				break;
+			default:
+				strcpy(kindSymbol, "unknown");
+				break;
+		}
 		//print entry data
+		printf("%-20s%-20s%-10s%3d\n", entry->name, entry->type, kindSymbol, entry->indexSymbol); 
 		entry = entry->next;
 	}
 }
