@@ -81,11 +81,101 @@ void define(char *name, char *type, kind kindType)
 }
 int varCount(kind kindType)
 {
-	return 0;
+	symbolTable *entry;
+	int count = 0;
+	if(kindType == STATIC_SMBL || kindType == FIELD_SMBL) //class symbol table kind Types
+	{
+		if(!classSmblTable) //if class symbol table is empty
+		{
+			return 0;
+		}
+		entry = classSmblTable;
+	}
+	else if(kindType == VAR_SMBL || kindType == ARG_SMBL) //class symbol table kind Types
+	{
+		if(!methodSmblTable) //if method symbol table is empty
+		{
+			return 0;
+		}
+		entry = methodSmblTable;
+	}
+	else //we won't land into this code by just in case
+	{
+		return 0;
+	}
+	while(entry!=0)
+	{
+		if(entry->kindType == kindType)
+		{
+			count++;
+		}
+		entry = entry->next;
+	}
+	return count;
 }
 kind kindOf(char *name)
 {
-	return STATIC_SMBL;
+	/* Basic idea will be using here is that first we look
+	 * into method symbol table and find a named identifer type
+	 * if it is not found there or method symbol table is not 
+	 * defined. Then we look into class symbol table, if named
+	 * identifier is not found in class symbol table we return 
+	 * NONE
+	 * Same concept will be used for function kindOf, typeOf, indexOf
+	 * */
+	symbolTable *entry;
+	//variable to track if we are scanning method or class symbol table
+	// 0 for method symbol table and 1 for class symbol table
+	int methodOrClassTable = 0; 
+	if(methodSmblTable)
+	{
+		entry = methodSmblTable;
+		methodOrClassTable = 0; //we are scanning method symbol table
+	}
+	else if(classSmblTable)
+	{
+		entry = classSmblTable;
+		methodOrClassTable = 1; //we are scanning class symbol table
+	}
+	else //no method or class symbol table found return NONE
+	{
+		return NONE;
+	}
+	while(entry!=0)
+	{
+		if(!strcmp(entry->name, name))
+		{
+			return entry->kindType;
+		}
+		entry = entry->next;
+	}
+	//we have reached here may be named identifer is not in method symbol table
+	//or class symbol table, or class symbol table is to be scanned
+	if(methodOrClassTable)
+	{
+		//we have already scanned class symbol table nothing found
+		//return NONE
+		return NONE;
+	}
+	else
+	{
+		//check class symbol table for occurance of named identifier
+		if(!classSmblTable)
+		{
+			//class symbol table is empty return NONE
+			return NONE;
+		}
+		entry = classSmblTable;
+	}
+	while(entry!=0)
+	{
+		if(!strcmp(entry->name, name))
+		{
+			return entry->kindType;
+		}
+		entry = entry->next;
+	}
+	return NONE; //nothing found
 }
 char* typeOf(char *name)
 {
@@ -93,19 +183,79 @@ char* typeOf(char *name)
 }
 int indexOf(char *name)
 {
-	return 0;
+	symbolTable *entry;
+	//variable to track if we are scanning method or class symbol table
+	// 0 for method symbol table and 1 for class symbol table
+	int methodOrClassTable = 0; 
+	if(methodSmblTable)
+	{
+		entry = methodSmblTable;
+		methodOrClassTable = 0; //we are scanning method symbol table
+	}
+	else if(classSmblTable)
+	{
+		entry = classSmblTable;
+		methodOrClassTable = 1; //we are scanning class symbol table
+	}
+	else //no method or class symbol table found return NONE
+	{
+		return -1;
+	}
+	while(entry!=0)
+	{
+		if(!strcmp(entry->name, name))
+		{
+			return entry->indexSymbol;
+		}
+		entry = entry->next;
+	}
+	//we have reached here may be named identifer is not in method symbol table
+	//or class symbol table, or class symbol table is to be scanned
+	if(methodOrClassTable)
+	{
+		//we have already scanned class symbol table nothing found
+		//return -1
+		return -1;
+	}
+	else
+	{
+		//check class symbol table for occurance of named identifier
+		if(!classSmblTable)
+		{
+			//class symbol table is empty return -1
+			return -1;
+		}
+		entry = classSmblTable;
+	}
+	while(entry!=0)
+	{
+		if(!strcmp(entry->name, name))
+		{
+			return entry->indexSymbol;
+		}
+		entry = entry->next;
+	}
+	return -1; //nothing found
 }
 void clearSymbolTable(int smblTable) //smblTable=0 for class symbol table, smblTable=1 for method symbol table
 {
 	symbolTable *entry, *next;
 	if(smblTable == 0)
 	{
+		if(!classSmblTable) //if not class symbol table already exists
+		{
+			return;
+		}
 		entry = classSmblTable->next;
 		free(classSmblTable);
 		classSmblTable = 0;
 	}
 	else
 	{
+		if(!methodSmblTable) //if not method symbol table already exists
+		{
+			return;
+		}
 		entry = methodSmblTable->next;
 		free(methodSmblTable);
 		methodSmblTable = 0;

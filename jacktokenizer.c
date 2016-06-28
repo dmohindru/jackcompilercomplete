@@ -173,7 +173,7 @@ void constructorTokenizer(char *filename)
 									if(tempStrCounter > 0) //string had no symbol or string ended with no symbols
 									{					   //this block of if may be a redudant code
 										tempStr[tempStrCounter] = '\0';
-										printf("token: %s\n", tempStr);
+										//printf("token: %s\n", tempStr);
 										tempStrCounter = 0;
 										memset(tempStr, 0, 100);
 									}
@@ -203,7 +203,7 @@ void constructorTokenizer(char *filename)
 			}
 		}
 	}
-	displayTokens();
+	//displayTokens();
 	current = head;
 }
 int hasMoreTokens()

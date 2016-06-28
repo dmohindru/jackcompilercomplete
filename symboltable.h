@@ -11,7 +11,7 @@
 #include <stdlib.h>
 typedef enum kind
 {
-	STATIC_SMBL, FIELD_SMBL, ARG_SMBL, VAR_SMBL
+	STATIC_SMBL, FIELD_SMBL, ARG_SMBL, VAR_SMBL, NONE
 }kind;
 typedef struct symbolTable
 {

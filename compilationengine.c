@@ -76,6 +76,12 @@ void compileClass()
 		fprintf(vmFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	compileClassVarDec(); //compile class variable decleration
+	//we should have now class symbol table ready so display it
+	printf("-------------------------------------------------\n");
+	printf("Displaying Class symbol table\n");
+	displaySymbolTable(0);
+	printf("-------------------------------------------------\n");
+	/////////////////////////////
 	compileSubroutine(); //compile class subroutines
 	
 	//token as already been read by previous function just check for 
@@ -309,14 +315,15 @@ void compileSubroutine()
 				printf("Not found any thing\n");
 				return;
 		}
-		//here we can safely start a new subroutine symbol table
-		startSubroutine();
+		
 	}
 	else //if the token type in not keyword this may be possible some other statement
 	{	  //return to compileClass method	
 		return;
 	}
 	//we have come so far so it must be a subroutine Decleration
+	//here we can safely start a new subroutine symbol table
+	startSubroutine();
 	//check for syntatic correctness and exit program if some errors are found
 	//check for 'type' token code block
 	if(!hasMoreTokens()) 
@@ -450,6 +457,12 @@ void compileSubroutine()
 	}
 	//compile var decleration
 	compileVarDec();
+	//we should have now class symbol table ready so display it
+	printf("-------------------------------------------------\n");
+	printf("Displaying Method symbol table\n");
+	displaySymbolTable(1);
+	printf("-------------------------------------------------\n");
+	/////////////////////////////////////////////////
 	//compile statements
 	fprintf(vmFile, "%s<statements>\n", indentString);
 	strcat(indentString, "  ");//increase the indent
@@ -835,7 +848,7 @@ void compileVarDec()
 					{
 						fprintf(vmFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 						strcpy(nameOfVar, identifier());
-						define(nameOfVar, typeOfVar, ARG_SMBL);
+						define(nameOfVar, typeOfVar, VAR_SMBL);
 					}
 					else //not a valid variable name
 					{

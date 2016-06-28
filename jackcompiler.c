@@ -183,6 +183,7 @@ int main( int argc, char *argv[] )  {
 					sprintf(jackFileName,"%s/%s",argv[1],ent->d_name);
 					constructorTokenizer(jackFileName);
 					constructorCompilationEngine(vmFileName);
+					constructorSymbolTable();
 					compileClass();
 					/*errorLine = readJackFile();
 					if(errorLine>0)
@@ -210,13 +211,14 @@ int main( int argc, char *argv[] )  {
 			} //check for .vm extension
 			memset(vmFileName,0,50);
 			memset(jackFileName,0,50);
-			printf("--------------------------\n");
+			//printf("--------------------------\n");
 			printf ("Reading file: %s\n", argv[1]);
 			snprintf(jackFileName, filePeriod - argv[1] + 1, "%s", argv[1]);
 			sprintf(vmFileName,"%s.xml",jackFileName);
-			printf("xml file name %s\n", vmFileName);
+			//printf("xml file name %s\n", vmFileName);
 			constructorTokenizer(argv[1]);
 			constructorCompilationEngine(vmFileName);
+			constructorSymbolTable();
 			compileClass();
 			/*errorLine = readJackFile();
 			//close();//close asm file
@@ -227,7 +229,7 @@ int main( int argc, char *argv[] )  {
 			}*/
 			freeToken(); //free tokens previously built in current file
 			fclose(vmFile);
-			printf("--------------------------\n");	
+			//printf("--------------------------\n");	
 		}
 		
 		return 0;
