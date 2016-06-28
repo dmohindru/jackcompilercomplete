@@ -179,7 +179,64 @@ kind kindOf(char *name)
 }
 char* typeOf(char *name)
 {
-	return 0;
+	symbolTable *entry;
+	//variable to track if we are scanning method or class symbol table
+	// 0 for method symbol table and 1 for class symbol table
+	int methodOrClassTable = 0; 
+	char *typeSymbol = 0; //initalize it to NULL
+	if(methodSmblTable)
+	{
+		entry = methodSmblTable;
+		methodOrClassTable = 0; //we are scanning method symbol table
+	}
+	else if(classSmblTable)
+	{
+		entry = classSmblTable;
+		methodOrClassTable = 1; //we are scanning class symbol table
+	}
+	else //no method or class symbol table found return NULL
+	{
+		return typeSymbol; //return NULL
+	}
+	while(entry!=0)
+	{
+		if(!strcmp(entry->name, name))
+		{
+			typeSymbol = (char*)malloc(sizeof(char)*20);
+			strcpy(typeSymbol, entry->type);
+			return typeSymbol;
+		}
+		entry = entry->next;
+	}
+	//we have reached here may be named identifer is not in method symbol table
+	//or class symbol table, or class symbol table is to be scanned
+	if(methodOrClassTable)
+	{
+		//we have already scanned class symbol table nothing found
+		//return NULL
+		return typeSymbol;
+	}
+	else
+	{
+		//check class symbol table for occurance of named identifier
+		if(!classSmblTable)
+		{
+			//class symbol table is empty return NULL
+			return typeSymbol;
+		}
+		entry = classSmblTable;
+	}
+	while(entry!=0)
+	{
+		if(!strcmp(entry->name, name))
+		{
+			typeSymbol = (char*)malloc(sizeof(char)*20);
+			strcpy(typeSymbol, entry->type);
+			return typeSymbol;
+		}
+		entry = entry->next;
+	}
+	return typeSymbol; //nothing found
 }
 int indexOf(char *name)
 {
@@ -214,7 +271,6 @@ int indexOf(char *name)
 	if(methodOrClassTable)
 	{
 		//we have already scanned class symbol table nothing found
-		//return -1
 		return -1;
 	}
 	else
