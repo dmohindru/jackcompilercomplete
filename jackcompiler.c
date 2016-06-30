@@ -162,7 +162,7 @@ int main( int argc, char *argv[] )  {
 		//FILE *asmFile;
 		struct dirent *ent;
 		//char asmFileName[30], *fileName, *filePeriod, vmFileName[50];
-		char *filePeriod, vmFileName[50], jackFileName[50];
+		char *filePeriod, vmFileName1[50], jackFileName[50],vmFileName[50];
 		int errorLine;
 		printf("The argument supplied is %s\n", argv[1]);
 		if(!isFile(argv[1])) //directory name supplied
@@ -174,16 +174,20 @@ int main( int argc, char *argv[] )  {
 				{
 					printf ("Reading file: %s\n", ent->d_name);
 					memset(vmFileName,0,50);
+					memset(vmFileName1,0,50);
 					memset(jackFileName,0,50);
 					printf("--------------------------\n");
 					snprintf(jackFileName, filePeriod - ent->d_name + 1, "%s", ent->d_name);
-					sprintf(vmFileName,"%s/%s.xml",argv[1],jackFileName);
-					printf("xml file name %s\n", vmFileName);
+					sprintf(vmFileName1,"%s/%s.xml",argv[1],jackFileName); //temp to be removed eventually
+					sprintf(vmFileName,"%s/%s.vm",argv[1],jackFileName);
+					printf("xml file name %s\n", vmFileName1); //temp to be removed eventually
+					printf("vm file name %s\n", vmFileName);
 					memset(jackFileName,0,50);
 					sprintf(jackFileName,"%s/%s",argv[1],ent->d_name);
 					constructorTokenizer(jackFileName);
-					constructorCompilationEngine(vmFileName);
+					constructorCompilationEngine(vmFileName1); //to be modified eventually
 					constructorSymbolTable();
+					constructorVMWriter(vmFileName);
 					compileClass();
 					/*errorLine = readJackFile();
 					if(errorLine>0)
@@ -210,15 +214,18 @@ int main( int argc, char *argv[] )  {
 				return 1;
 			} //check for .vm extension
 			memset(vmFileName,0,50);
+			memset(vmFileName1,0,50);
 			memset(jackFileName,0,50);
 			//printf("--------------------------\n");
 			printf ("Reading file: %s\n", argv[1]);
 			snprintf(jackFileName, filePeriod - argv[1] + 1, "%s", argv[1]);
-			sprintf(vmFileName,"%s.xml",jackFileName);
+			sprintf(vmFileName1,"%s.xml",jackFileName); //temp to be removed eventually
+			sprintf(vmFileName,"%s.vm",jackFileName);
 			//printf("xml file name %s\n", vmFileName);
 			constructorTokenizer(argv[1]);
-			constructorCompilationEngine(vmFileName);
+			constructorCompilationEngine(vmFileName1); //to be modified eventually
 			constructorSymbolTable();
+			constructorVMWriter(vmFileName);
 			compileClass();
 			/*errorLine = readJackFile();
 			//close();//close asm file
