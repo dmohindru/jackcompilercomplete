@@ -7,15 +7,17 @@
 #ifndef VMWRITER_H
 #define VMWRITER_H
 #include <stdio.h>
+#include <stdlib.h>
+FILE *vmFile; //current vm file pointer for writing to
 typedef enum segment
 {
-	CONST, ARG, LOCAL, STATIC, THIS, THAT, POINTER, TEMP
+	CONST_SEG, ARG_SEG, LOCAL_SEG, STATIC_SEG, THIS_SEG, THAT_SEG, POINTER_SEG, TEMP_SEG
 }segment; 
 typedef enum command
 {
 	ADD, SUB, NEG, EQ, GT, LT, AND, OR, NOT
 }command;
-void constructorVMWriter(FILE *vmFile);
+void constructorVMWriter(char *fileName);
 void writePush(segment segType, int index);
 void writePop(segment segType, int index);
 void writeArithmetic(command commType);

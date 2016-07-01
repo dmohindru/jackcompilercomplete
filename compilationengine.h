@@ -11,7 +11,8 @@
 #include <stdlib.h>
 #include "jacktokenizer.h"
 #include "symboltable.h"
-FILE *vmFile; //current vm file pointer for reading
+#include "vmwriter.h"
+FILE *xmlFile; //current xml file pointer for writing
 char indentString[100];
 //char currentFunction[50];
 //int incrementer;

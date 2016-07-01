@@ -39,7 +39,7 @@ void readDir() //and display only files with vm entension
 
 int readJackFile() //return line no if error occurs else return 0
 {
-	char symbolTemp;
+	/*char symbolTemp;
 	while(hasMoreTokens())
 	{
 		advance();
@@ -147,7 +147,7 @@ int readJackFile() //return line no if error occurs else return 0
 				return currentToken->line; 
 		};
 	}
-	return 0;
+	return 0;*/
 }
 int compileJackFile()
 {
