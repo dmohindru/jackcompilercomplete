@@ -12,6 +12,12 @@ void constructorVMWriter(char *fileName)
 }
 void writePush(segment segType, int index)
 {
+	if(index<0)
+	{
+		printf("Negetive segment index not allowed\n");
+		close();
+		exit(1);
+	}
 	switch(segType)
 	{
 		case CONST_SEG:
@@ -45,6 +51,12 @@ void writePush(segment segType, int index)
 }
 void writePop(segment segType, int index)
 {
+	if(index<0)
+	{
+		printf("Negetive segment index not allowed\n");
+		close();
+		exit(1);
+	}
 	switch(segType)
 	{
 		case CONST_SEG:
@@ -126,10 +138,22 @@ void writeIf(char *label)
 }
 void writeCall(char *name, int nArgs)
 {
+	if(nArgs<0)
+	{
+		printf("function call with negetive arguments not allowed\n");
+		close();
+		exit(1);
+	}
 	fprintf(vmFile, "call %s %d\n", name, nArgs);
 }
 void writeFunction(char *name, int nLocals)
 {
+	if(nLocals<0)
+	{
+		printf("function with negetive local variables not allowed\n");
+		close();
+		exit(1);
+	}
 	fprintf(vmFile, "function %s %d\n", name, nLocals);
 }
 void writeReturn()

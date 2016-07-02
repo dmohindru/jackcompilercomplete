@@ -151,9 +151,35 @@ int readJackFile() //return line no if error occurs else return 0
 }
 void testVMCommands()
 {
+	//testing push all segements
 	writePush(LOCAL_SEG, 2);
-	writePop(THIS_SEG, 0);
+	writePush(ARG_SEG, 0);
+	writePush(STATIC_SEG, 1);
+	writePush(CONST_SEG, 6);
+	writePush(THIS_SEG, 4);
+	writePush(THAT_SEG, 3);
+	writePush(POINTER_SEG, 4);
+	writePush(TEMP_SEG, 3);
+	//testing pop all segments
+	writePop(LOCAL_SEG, 0);
+	writePop(ARG_SEG, 0);
+	writePop(STATIC_SEG, 10);
+	writePop(CONST_SEG, 0);
+	writePop(THIS_SEG, 4);
+	writePop(THAT_SEG, 0);
+	writePop(POINTER_SEG, 0);
+	writePop(TEMP_SEG, 0);
+	//test all arthmatic and logical commands
 	writeArithmetic(ADD);
+	writeArithmetic(SUB);
+	writeArithmetic(NEG);
+	writeArithmetic(EQ);
+	writeArithmetic(GT);
+	writeArithmetic(LT);
+	writeArithmetic(AND);
+	writeArithmetic(OR);
+	writeArithmetic(NOT);
+	// other commands
 	writeFunction("Dummy", 4);
 	writeCall("DummyCall", 3);
 	writeIf("DummyLabel");
@@ -238,7 +264,7 @@ int main( int argc, char *argv[] )  {
 			constructorCompilationEngine(vmFileName1); //to be modified eventually
 			constructorSymbolTable();
 			constructorVMWriter(vmFileName);
-			testVMCommands(); // a very temp stuff
+			//testVMCommands(); // a very temp stuff
 			compileClass();
 			/*errorLine = readJackFile();
 			//close();//close asm file
