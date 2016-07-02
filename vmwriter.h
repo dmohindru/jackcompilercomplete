@@ -22,7 +22,7 @@ void writePush(segment segType, int index);
 void writePop(segment segType, int index);
 void writeArithmetic(command commType);
 void writeLabel(char *label);
-void wrtieGoto(char *label);
+void writeGoto(char *label);
 void writeIf(char *label);
 void writeCall(char *name, int nArgs);
 void writeFunction(char *name, int nLocals);

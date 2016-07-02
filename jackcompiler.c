@@ -149,6 +149,18 @@ int readJackFile() //return line no if error occurs else return 0
 	}
 	return 0;*/
 }
+void testVMCommands()
+{
+	writePush(LOCAL_SEG, 2);
+	writePop(THIS_SEG, 0);
+	writeArithmetic(ADD);
+	writeFunction("Dummy", 4);
+	writeCall("DummyCall", 3);
+	writeIf("DummyLabel");
+	writeLabel("DummyLabel");
+	writeGoto("DummyLabel");
+	writeReturn();
+}
 int compileJackFile()
 {
 	compileClass();
@@ -226,6 +238,7 @@ int main( int argc, char *argv[] )  {
 			constructorCompilationEngine(vmFileName1); //to be modified eventually
 			constructorSymbolTable();
 			constructorVMWriter(vmFileName);
+			testVMCommands(); // a very temp stuff
 			compileClass();
 			/*errorLine = readJackFile();
 			//close();//close asm file

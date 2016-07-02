@@ -114,21 +114,27 @@ void writeArithmetic(command commType)
 }
 void writeLabel(char *label)
 {
+	fprintf(vmFile, "label %s\n", label);
 }
-void wrtieGoto(char *label)
+void writeGoto(char *label)
 {
+	fprintf(vmFile, "goto %s\n", label);
 }
 void writeIf(char *label)
 {
+	fprintf(vmFile, "if-goto %s\n", label);
 }
 void writeCall(char *name, int nArgs)
 {
+	fprintf(vmFile, "call %s %d\n", name, nArgs);
 }
 void writeFunction(char *name, int nLocals)
 {
+	fprintf(vmFile, "function %s %d\n", name, nLocals);
 }
 void writeReturn()
 {
+	fprintf(vmFile, "return\n");
 }
 void close()
 {
