@@ -30,20 +30,20 @@ void define(char *name, char *type, kind kindType)
 	switch(kindType)
 	{
 		case STATIC_SMBL:
-			staticIndex++;
-			currentEntry->indexSymbol = staticIndex;
+			currentEntry->indexSymbol = staticIndex++;
+			//staticIndex++;
 			break;
 		case FIELD_SMBL:
-			fieldIndex++;
-			currentEntry->indexSymbol = fieldIndex;
+			//fieldIndex++;
+			currentEntry->indexSymbol = fieldIndex++;
 			break;
 		case ARG_SMBL:
-			argIndex++;
-			currentEntry->indexSymbol = argIndex;
+			//argIndex++;
+			currentEntry->indexSymbol = argIndex++;
 			break;
 		case VAR_SMBL:
-			varIndex++;
-			currentEntry->indexSymbol = varIndex;
+			//varIndex++;
+			currentEntry->indexSymbol = varIndex++;
 			break;
 		default: //we may never possibly land in this code but just in case
 			printf("Unknown symbol type found\n");

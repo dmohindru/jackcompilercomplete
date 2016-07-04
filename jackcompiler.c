@@ -187,6 +187,34 @@ void testVMCommands()
 	writeGoto("DummyLabel");
 	writeReturn();
 }
+void testSymbolTable() //just a temporary function to test symbol api
+{
+	//first populate symbol tables
+	define("nAccounts", "int", STATIC_SMBL);
+	define("bankCommission", "int", STATIC_SMBL);
+	define("id", "int", FIELD_SMBL);
+	define("owner", "String", FIELD_SMBL);
+	define("balance", "int", FIELD_SMBL);
+	define("this", "BankAccount", ARG_SMBL);
+	define("sum", "int", ARG_SMBL);
+	define("from", "BankAccount", ARG_SMBL);
+	define("when", "Date", ARG_SMBL);
+	define("i", "int", VAR_SMBL);
+	define("j", "int", VAR_SMBL);
+	define("due", "Date", VAR_SMBL);
+	//then display them
+	printf("Displaying class symbol table\n");
+	printf("--------------------------------------\n");
+	displaySymbolTable(0); //display class symbol table
+	printf("--------------------------------------\n");
+	printf("Displaying method symbol table\n");
+	printf("--------------------------------------\n");
+	displaySymbolTable(1); //display class symbol table
+	printf("--------------------------------------\n");
+	//now test other api's
+	
+	
+}
 int compileJackFile()
 {
 	compileClass();
@@ -264,8 +292,9 @@ int main( int argc, char *argv[] )  {
 			constructorCompilationEngine(vmFileName1); //to be modified eventually
 			constructorSymbolTable();
 			constructorVMWriter(vmFileName);
-			//testVMCommands(); // a very temp stuff
-			compileClass();
+			testVMCommands(); // a very temp stuff
+			testSymbolTable(); // a very temp stuff
+			//compileClass(); <====== Important
 			/*errorLine = readJackFile();
 			//close();//close asm file
 			if(errorLine>0)
