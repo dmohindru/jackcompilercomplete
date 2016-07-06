@@ -189,6 +189,7 @@ void testVMCommands()
 }
 void testSymbolTable() //just a temporary function to test symbol api
 {
+	char *str;
 	//first populate symbol tables
 	define("nAccounts", "int", STATIC_SMBL);
 	define("bankCommission", "int", STATIC_SMBL);
@@ -212,8 +213,77 @@ void testSymbolTable() //just a temporary function to test symbol api
 	displaySymbolTable(1); //display class symbol table
 	printf("--------------------------------------\n");
 	//now test other api's
-	
-	
+	//varCount
+	printf("Testing varCount function\n");
+	printf("--------------------------------------\n");
+	printf("Number of static variables: %d\n", varCount(STATIC_SMBL));
+	printf("Number of field variables: %d\n", varCount(FIELD_SMBL));
+	printf("Number of argument variables: %d\n", varCount(ARG_SMBL));
+	printf("Number of var variables: %d\n", varCount(VAR_SMBL));
+	printf("--------------------------------------\n");
+	//kindOf
+	printf("Testing kindOf function\n");
+	printf("--------------------------------------\n");
+	printf("Kind of variable named 'balance' ");
+	switch(kindOf("balance"))
+	{
+		case STATIC_SMBL:
+			printf("static\n");
+			break;
+		case FIELD_SMBL:
+			printf("field\n");
+			break;
+		case ARG_SMBL:
+			printf("argument\n");
+			break;
+		case VAR_SMBL:
+			printf("var\n");
+			break;
+		default:
+			printf("Unknown type\n");
+	}
+	printf("Kind of variable named 'sum' ");
+	switch(kindOf("sum"))
+	{
+		case STATIC_SMBL:
+			printf("static\n");
+			break;
+		case FIELD_SMBL:
+			printf("field\n");
+			break;
+		case ARG_SMBL:
+			printf("argument\n");
+			break;
+		case VAR_SMBL:
+			printf("var\n");
+			break;
+		default:
+			printf("Unknown type\n");
+	}
+	printf("--------------------------------------\n");
+	printf("Testing typeOf function\n");
+	printf("--------------------------------------\n");
+	str = typeOf("owner");
+	printf("Type of variable 'owner' is %s\n", str);
+	free(str);
+	str = typeOf("nAccounts");
+	printf("Type of variable 'nAccounts' is %s\n", str);
+	free(str);
+	str = typeOf("from");
+	printf("Type of variable 'from' is %s\n", str);
+	free(str);
+	str = typeOf("j");
+	printf("Type of variable 'j' is %s\n", str);
+	free(str);
+	printf("--------------------------------------\n");
+	printf("Testing indexOf function\n");
+	printf("--------------------------------------\n");
+	printf("Index of variable 'nAccounts' is %d\n", indexOf("nAccounts"));
+	printf("Index of variable 'id' is %d\n", indexOf("id"));
+	printf("Index of variable 'sum' is %d\n", indexOf("sum"));
+	printf("Index of variable 'when' is %d\n", indexOf("when"));
+	printf("Index of variable 'j' is %d\n", indexOf("j"));
+	printf("--------------------------------------\n");
 }
 int compileJackFile()
 {
@@ -292,9 +362,9 @@ int main( int argc, char *argv[] )  {
 			constructorCompilationEngine(vmFileName1); //to be modified eventually
 			constructorSymbolTable();
 			constructorVMWriter(vmFileName);
-			testVMCommands(); // a very temp stuff
-			testSymbolTable(); // a very temp stuff
-			//compileClass(); <====== Important
+			//testVMCommands(); // a very temp stuff
+			//testSymbolTable(); // a very temp stuff
+			compileClass();
 			/*errorLine = readJackFile();
 			//close();//close asm file
 			if(errorLine>0)

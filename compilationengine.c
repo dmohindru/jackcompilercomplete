@@ -9,6 +9,11 @@ void constructorCompilationEngine(char *fileName)
 {
 	//TODO: As check for filename extenstion .asm
 	xmlFile = fopen ( fileName, "w" );
+	//reset className, functionName buffer
+	memset(className, 0, 100); 
+	memset(functionName, 0, 100);
+	numOfParameter = 0;
+	numOfLocals = 0;
 	//fprintf(xmlFile, "XML Content for file %s\n", fileName);
 	//incrementer = 0;
 	//temp stuff
@@ -22,7 +27,7 @@ void constructorCompilationEngine(char *fileName)
 }
 void compileClass()
 {
-	memset(indentString, 0, 100);
+	//memset(indentString, 0, 100);
 	if(!hasMoreTokens()) //if block for class keyword
 	{
 		printf("Could not find class keyword at start of file\n");
@@ -37,9 +42,9 @@ void compileClass()
 			return; //or may be exit
 		}
 		//write here to vm file <class> tag here
-		fprintf(xmlFile, "<class>\n");
-		strcat(indentString, "  ");//increase indentation
-		fprintf(xmlFile, "%s<keyword> class </keyword>\n", indentString);
+		//fprintf(xmlFile, "<class>\n");
+		//strcat(indentString, "  ");//increase indentation
+		//fprintf(xmlFile, "%s<keyword> class </keyword>\n", indentString);
 	}
 	
 	if(!hasMoreTokens()) //if block for class name identifier
@@ -56,7 +61,8 @@ void compileClass()
 			return;
 		}
 		//write here to vm file name identifier tag <identifier> className </identifer>
-		fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+		strcpy(className, identifier()); //get the class name
+		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 	}
 	
 	if(!hasMoreTokens()) //if block for '{' symbol
@@ -73,7 +79,7 @@ void compileClass()
 			return;
 		}
 		//write here to vm file for symbol { tag <symbol> { </symbol>
-		fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
+		//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	compileClassVarDec(); //compile class variable decleration
 	//we should have now class symbol table ready so display it
@@ -92,9 +98,9 @@ void compileClass()
 		return;
 	}
 	//write here to vm file for symbol } tag <symbol> } </symbol>
-	fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
+	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
 	//finally write a ending class tag </class>
-	fprintf(xmlFile, "</class>");
+	//fprintf(xmlFile, "</class>");
 }
 void compileClassVarDec()
 {
@@ -292,27 +298,29 @@ void compileSubroutine()
 	//check for constructor or function or method keyword code block
 	//since token has been ready by previous function like compileVarDec or 
 	//compileSubroutine which is called recussively
+	char vmFunctionName[200];
+	memset(vmFunctionName, 0, 200); //reset vmFunctionName
 	if(tokenType() == KEYWORD)
 	{
 		switch(keyWord())
 		{
 			case CONSTRUCTOR:
-				fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
-				strcat(indentString, "  ");//increase the indent
-				fprintf(xmlFile, "%s<keyword> constructor </keyword>\n", indentString);
+				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
+				//strcat(indentString, "  ");//increase the indent
+				//fprintf(xmlFile, "%s<keyword> constructor </keyword>\n", indentString);
 				break;
 			case FUNCTION:
-				fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
-				strcat(indentString, "  ");//increase the indent
-				fprintf(xmlFile, "%s<keyword> function </keyword>\n", indentString); 
+				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
+				//strcat(indentString, "  ");//increase the indent
+				//fprintf(xmlFile, "%s<keyword> function </keyword>\n", indentString); 
 				break;
 			case METHOD:
-				fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
-				strcat(indentString, "  ");//increase the indent
-				fprintf(xmlFile, "%s<keyword> method </keyword>\n", indentString);
+				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
+				//strcat(indentString, "  ");//increase the indent
+				//fprintf(xmlFile, "%s<keyword> method </keyword>\n", indentString);
 				break;
 			default:   //static or field keyword not found return to compileClass Method
-				printf("Not found any thing\n");
+				//printf("Not found any thing\n");
 				return;
 		}
 		
@@ -341,16 +349,16 @@ void compileSubroutine()
 			switch(keyWord())
 			{
 				case INT:
-					fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					break;
 				case CHAR:
-					fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					break;
 				case BOOLEAN:
-					fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					break;
 				case VOID:
-					fprintf(xmlFile, "%s<keyword> void </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> void </keyword>\n", indentString);
 					break;
 				default: //not a valid keyword found in 'type' decleration
 					printf("Return 'type' unknown at line %d\n", currentToken->line);
@@ -361,7 +369,7 @@ void compileSubroutine()
 		}
 		else if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 		}
 		else  //not found legal keyword or identifier in 'type' decleration
 		{
@@ -384,7 +392,8 @@ void compileSubroutine()
 		advance(); //get next token for subroutine name
 		if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			strcpy(functionName, identifier()); //get the function name
 		}
 		else //not a valid subroutine name token
 		{
@@ -395,6 +404,8 @@ void compileSubroutine()
 		}
 	}
 	//symbol '(' check block
+	//here set numOfLocals to zero
+	numOfLocals = 0;
 	if(!hasMoreTokens()) 
 	{
 		printf("expected symbol '(' at line %d\n", currentToken->line);
@@ -407,7 +418,7 @@ void compileSubroutine()
 		advance(); //get next token for symbol '('
 		if(tokenType() == SYMBOL && symbol() == '(')
 		{
-			fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
+			//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 		}
 		else //not a valid subroutine name token
 		{
@@ -428,10 +439,10 @@ void compileSubroutine()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
+	//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 	//compile subroutine body
-	fprintf(xmlFile, "%s<subroutineBody>\n", indentString);
-	strcat(indentString, "  ");//increase the indent
+	//fprintf(xmlFile, "%s<subroutineBody>\n", indentString);
+	//strcat(indentString, "  ");//increase the indent
 	//check for symbol '{' for start of subroutine body
 	if(!hasMoreTokens()) 
 	{
@@ -445,7 +456,7 @@ void compileSubroutine()
 		advance(); //get next token for symbol '{'
 		if(tokenType() == SYMBOL && symbol() == '{')
 		{
-			fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
+			//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 		}
 		else //not a valid subroutine name token
 		{
@@ -457,18 +468,22 @@ void compileSubroutine()
 	}
 	//compile var decleration
 	compileVarDec();
-	//we should have now class symbol table ready so display it
+	//we should have now method symbol table ready so display it
 	printf("-------------------------------------------------\n");
 	printf("Displaying Method symbol table\n");
 	displaySymbolTable(1);
 	printf("-------------------------------------------------\n");
 	/////////////////////////////////////////////////
+	//**here we should write functoin name nLocals to vm file as we 
+	//**should have by now total number of local in a function
+	sprintf(vmFunctionName, "%s.%s", className, functionName);
+	writeFunction(vmFunctionName, numOfLocals);
 	//compile statements
-	fprintf(xmlFile, "%s<statements>\n", indentString);
-	strcat(indentString, "  ");//increase the indent
+	//fprintf(xmlFile, "%s<statements>\n", indentString);
+	//strcat(indentString, "  ");//increase the indent
 	compileStatements();
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</statements>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</statements>\n", indentString);
 	//since next token has already been read by compileVarDec() or compileStatements so just
 	//check for symbol '}'
 	if(tokenType() != SYMBOL || symbol() != '}')
@@ -478,11 +493,11 @@ void compileSubroutine()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</subroutineBody>\n", indentString);
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</subroutineDec>\n", indentString);
+	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</subroutineBody>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</subroutineDec>\n", indentString);
 	//recussively call compileSubroutine
 	if(!hasMoreTokens())
 	{
@@ -520,21 +535,21 @@ void compileParameterList()
 			switch(keyWord())
 			{
 				case INT:
-					fprintf(xmlFile, "%s<parameterList>\n", indentString);
-					strcat(indentString, "  ");//increase the indent
-					fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<parameterList>\n", indentString);
+					//strcat(indentString, "  ");//increase the indent
+					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
-					fprintf(xmlFile, "%s<parameterList>\n", indentString);
-					strcat(indentString, "  ");//increase the indent
-					fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<parameterList>\n", indentString);
+					//strcat(indentString, "  ");//increase the indent
+					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
-					fprintf(xmlFile, "%s<parameterList>\n", indentString);
-					strcat(indentString, "  ");//increase the indent
-					fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<parameterList>\n", indentString);
+					//strcat(indentString, "  ");//increase the indent
+					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
@@ -546,16 +561,16 @@ void compileParameterList()
 		}
 		else if(tokenType() == IDENTIFIER) //type of some class name 'identifer'
 		{
-			fprintf(xmlFile, "%s<parameterList>\n", indentString);
-			strcat(indentString, "  ");//increase the indent
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<parameterList>\n", indentString);
+			//strcat(indentString, "  ");//increase the indent
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(typeOfVar, identifier());
 		}
 		else if(tokenType() == SYMBOL && symbol() == ')') //we just found an empty parameter list
 		{
 			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-			fprintf(xmlFile, "%s<parameterList>\n", indentString);
-			fprintf(xmlFile, "%s</parameterList>\n", indentString);
+			//fprintf(xmlFile, "%s<parameterList>\n", indentString);
+			//fprintf(xmlFile, "%s</parameterList>\n", indentString);
 			return;
 		}
 		else  //not found legal keyword or identifier in 'type' decleration
@@ -579,9 +594,10 @@ void compileParameterList()
 		advance(); //get next token for variable name
 		if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(nameOfVar, identifier());
 			define(nameOfVar, typeOfVar, ARG_SMBL);
+			//numOfLocals++; //increment number of locals for a function
 		}
 		else //not a valid variable name token
 		{
@@ -619,7 +635,7 @@ void compileParameterList()
 					return;
 					//break;
 				case ',':
-					fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
+					//fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
 					break;
 				default:
 					printf("Parameter decleration error at line %d\n", currentToken->line);
@@ -632,7 +648,7 @@ void compileParameterList()
 		{
 			printf("Parameter decleration error at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			//fclose(xmlFile);
 			exit(1);
 		}
 		else
@@ -644,34 +660,34 @@ void compileParameterList()
 			switch(keyWord())
 			{
 				case INT:
-					fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
-					fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
-					fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
 					printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					//fclose(xmlFile);
 					exit(1);
 			}
 		}
 		else if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifer>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifer>\n", indentString, identifier());
 			strcpy(typeOfVar, identifier());
 		}
 		else
 		{
 			printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			//fclose(xmlFile);
 			exit(1);
 		}
 		if(!hasMoreTokens()) // check for more token for identifier
@@ -688,15 +704,16 @@ void compileParameterList()
 		
 		if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(nameOfVar, identifier());
 			define(nameOfVar, typeOfVar, ARG_SMBL);
+			//numOfLocals++;
 		}
 		else //not a valid variable name token
 		{
 			printf("token variable not found at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			//fclose(xmlFile);
 			exit(1);
 		}
 	}
@@ -720,9 +737,9 @@ void compileVarDec()
 			switch(keyWord())
 			{
 				case VAR:
-					fprintf(xmlFile, "%s<varDec>\n", indentString);
-					strcat(indentString, "  "); //increase the indent
-					fprintf(xmlFile, "%s<keyword> var </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<varDec>\n", indentString);
+					//strcat(indentString, "  "); //increase the indent
+					//fprintf(xmlFile, "%s<keyword> var </keyword>\n", indentString);
 					break;
 				default:   //var keyword not found return to compileSubroutine Method
 					return;
@@ -751,15 +768,15 @@ void compileVarDec()
 			switch(keyWord())
 			{
 				case INT:
-					fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
-					fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
-					fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
@@ -771,7 +788,7 @@ void compileVarDec()
 		}
 		else if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(typeOfVar, identifier());
 		}
 		else  //not found legal keyword or identifier in 'type' decleration
@@ -795,9 +812,10 @@ void compileVarDec()
 		advance(); //get next token for variable name
 		if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(nameOfVar, identifier());
 			define(nameOfVar, typeOfVar, VAR_SMBL);
+			numOfLocals++;
 		}
 		else //not a valid variable name token
 		{
@@ -827,15 +845,15 @@ void compileVarDec()
 				memset(nameOfVar, 0, 100);
 				if(symbol() == ';')
 				{
-					fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
+					//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
 					//strncpy(indentString, indentString, strlen(indentString)-2);
-					indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-					fprintf(xmlFile, "%s</varDec>\n", indentString);
+					//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+					//fprintf(xmlFile, "%s</varDec>\n", indentString);
 					break;
 				}
 				else if(symbol() == ',')
 				{
-					fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
+					//fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
 					if(!hasMoreTokens()) //check for variable name token
 					{
 						printf("token variable name not found at line %d\n", currentToken->line);
@@ -846,9 +864,10 @@ void compileVarDec()
 					advance(); //get the next variable name token 
 					if(tokenType() == IDENTIFIER)
 					{
-						fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+						//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 						strcpy(nameOfVar, identifier());
 						define(nameOfVar, typeOfVar, VAR_SMBL);
+						numOfLocals++;
 					}
 					else //not a valid variable name
 					{
@@ -930,9 +949,9 @@ void compileDo()
 {
 	//straight away write <doStatement> tag as it has been
 	//ready by compileStatments function
-	fprintf(xmlFile, "%s<doStatement>\n", indentString);
-	strcat(indentString, "  "); //increase the indent
-	fprintf(xmlFile, "%s<keyword> do </keyword>\n", indentString);
+	//fprintf(xmlFile, "%s<doStatement>\n", indentString);
+	//strcat(indentString, "  "); //increase the indent
+	//fprintf(xmlFile, "%s<keyword> do </keyword>\n", indentString);
 	//read next token which should be identifier
 	if(!hasMoreTokens())
 	{
@@ -951,7 +970,7 @@ void compileDo()
 			fclose(xmlFile);
 			exit(1);
 		}
-		fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 	}
 	//read next token as symbol '(' or '.'
 	if(!hasMoreTokens())

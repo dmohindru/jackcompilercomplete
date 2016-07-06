@@ -13,7 +13,9 @@
 #include "symboltable.h"
 #include "vmwriter.h"
 FILE *xmlFile; //current xml file pointer for writing
-char indentString[100];
+char indentString[100]; //temp thing now
+char className[100], functionName[100];
+int numOfParameter, numOfLocals;
 //char currentFunction[50];
 //int incrementer;
 void constructorCompilationEngine(char *filename);
