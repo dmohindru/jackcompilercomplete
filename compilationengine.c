@@ -1494,6 +1494,7 @@ void compileExpression()
 			switch(symbol())
 			{
 				case ')':
+					numOfParameter--;
 					return;
 				case ';':
 					return;
@@ -1519,7 +1520,7 @@ void compileExpression()
 			//so put ending tags here
 			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 			//fprintf(xmlFile, "%s</expression>\n", indentString);
-			numOfParameter++;
+			//numOfParameter++;
 			return;
 		}
 		switch(symbol())
@@ -1564,7 +1565,7 @@ void compileExpression()
 			default:
 				//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 				//fprintf(xmlFile, "%s</expression>\n", indentString);
-				numOfParameter++;
+				//numOfParameter++;
 				return;
 				//printf("unknown 'op' type at line %d\n", currentToken->line);
 				//freeToken();
@@ -1587,7 +1588,7 @@ void compileExpression()
 			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 			fprintf(xmlFile, "%s</term>\n", indentString);	
 		}
-		//write command to vm file
+		//write 'op' lscommand to vm file
 		if(mulOrDivide == 1) // write math.multiply function
 		{
 			writeCall("Math.multiply", 2); 
@@ -1857,6 +1858,7 @@ void compileExpressionList()
 		fprintf(xmlFile, "%s</expressionList>\n", indentString);
 		return;
 	}*/
+	numOfParameter++;
 	compileExpression();
 	//numOfParameter++;
 	while(1)
@@ -1868,6 +1870,7 @@ void compileExpressionList()
 			return;
 		}
 		fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
+		numOfParameter++;
 		compileExpression();
 		//numOfParameter++;
 	}
