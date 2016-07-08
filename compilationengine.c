@@ -1494,12 +1494,9 @@ void compileExpression()
 			switch(symbol())
 			{
 				case ')':
-<<<<<<< HEAD
 					/* This block of code is specific to compileExpressionList
 					 * and will be only executed if expressionList is empty
 					 */
-=======
->>>>>>> aa84d95eab0685c843a239a91625ed3726cdf320
 					numOfParameter--;
 					return;
 				case ';':
