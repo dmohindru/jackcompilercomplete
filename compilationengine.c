@@ -1494,9 +1494,12 @@ void compileExpression()
 			switch(symbol())
 			{
 				case ')':
+<<<<<<< HEAD
 					/* This block of code is specific to compileExpressionList
 					 * and will be only executed if expressionList is empty
 					 */
+=======
+>>>>>>> aa84d95eab0685c843a239a91625ed3726cdf320
 					numOfParameter--;
 					return;
 				case ';':
@@ -1877,10 +1880,6 @@ void compileExpressionList()
 			return;
 		}
 		fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
-		/* Below is a desi jugad for incrementing number of numOfParameters
-		 * as some of the logic of empty expressionList lies in functoin
-		 * compileExpression
-		 */
 		numOfParameter++;
 		compileExpression();
 		//numOfParameter++;
