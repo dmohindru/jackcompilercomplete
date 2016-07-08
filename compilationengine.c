@@ -1880,6 +1880,10 @@ void compileExpressionList()
 			return;
 		}
 		fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
+		/* Below is a desi jugad for incrementing number of numOfParameters
+		 * as some of the logic of empty expressionList lies in functoin
+		 * compileExpression
+		 */
 		numOfParameter++;
 		compileExpression();
 		//numOfParameter++;
