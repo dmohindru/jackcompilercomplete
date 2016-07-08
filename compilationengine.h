@@ -15,7 +15,7 @@
 FILE *xmlFile; //current xml file pointer for writing
 char indentString[100]; //temp thing now
 char className[100], functionName[100];
-int numOfParameter, numOfLocals;
+int numOfParameter, numOfLocals, isVoid;
 //char currentFunction[50];
 //int incrementer;
 void constructorCompilationEngine(char *filename);

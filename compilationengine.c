@@ -14,6 +14,7 @@ void constructorCompilationEngine(char *fileName)
 	memset(functionName, 0, 100);
 	numOfParameter = 0;
 	numOfLocals = 0;
+	isVoid = 0; //return type of function 0 = not void, 1 = void
 	//fprintf(xmlFile, "XML Content for file %s\n", fileName);
 	//incrementer = 0;
 	//temp stuff
@@ -299,6 +300,7 @@ void compileSubroutine()
 	//since token has been ready by previous function like compileVarDec or 
 	//compileSubroutine which is called recussively
 	char vmFunctionName[200];
+	isVoid = 0;
 	memset(vmFunctionName, 0, 200); //reset vmFunctionName
 	if(tokenType() == KEYWORD)
 	{
@@ -359,6 +361,7 @@ void compileSubroutine()
 					break;
 				case VOID:
 					//fprintf(xmlFile, "%s<keyword> void </keyword>\n", indentString);
+					isVoid = 1;
 					break;
 				default: //not a valid keyword found in 'type' decleration
 					printf("Return 'type' unknown at line %d\n", currentToken->line);
@@ -1284,9 +1287,9 @@ void compileReturn()
 {
 	//straight away write <ReturnStatement> tag as it has been
 	//ready by compileStatments function
-	fprintf(xmlFile, "%s<returnStatement>\n", indentString);
-	strcat(indentString, "  "); //increase the indent
-	fprintf(xmlFile, "%s<keyword> return </keyword>\n", indentString);
+	//fprintf(xmlFile, "%s<returnStatement>\n", indentString);
+	//strcat(indentString, "  "); //increase the indent
+	//fprintf(xmlFile, "%s<keyword> return </keyword>\n", indentString);
 	//straight way call compileExpression
 	compileExpression();
 	//since next token has been read by compileExpression
@@ -1297,9 +1300,15 @@ void compileReturn()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</returnStatement>\n", indentString);
+	//push constant 0 if return type is of type void
+	if(isVoid)
+	{
+		writePush(CONST_SEG, 0);
+	}
+	writeReturn();
+	//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</returnStatement>\n", indentString);
 }
 void compileIf()
 {
