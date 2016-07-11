@@ -1,0 +1,13 @@
+function Main.main 0
+// let value = Memory.peek(8000);
+push constant 8000
+call Memory.peek 1
+pop local 1
+// let value = result + 200
+push local 0
+push constant 200
+add
+pop local 1
+push local 0
+return
+

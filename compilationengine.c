@@ -1096,9 +1096,11 @@ void compileLet()
 {
 	//straight away write <letStatement> tag as it has been
 	//ready by compileStatments function
-	fprintf(xmlFile, "%s<letStatement>\n", indentString);
-	strcat(indentString, "  "); //increase the indent
-	fprintf(xmlFile, "%s<keyword> let </keyword>\n", indentString);
+	char varName[100];
+	memset(varName, 0, 100); //reset varName buffer
+	//fprintf(xmlFile, "%s<letStatement>\n", indentString);
+	//strcat(indentString, "  "); //increase the indent
+	//fprintf(xmlFile, "%s<keyword> let </keyword>\n", indentString);
 	//read next token which should be identifier
 	if(!hasMoreTokens())
 	{
@@ -1117,7 +1119,8 @@ void compileLet()
 			fclose(xmlFile);
 			exit(1);
 		}
-		fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+		strcpy(varName, identifier()); //copy identifer for later use
 	}
 	//read next token as symbol '[' or '='
 	if(!hasMoreTokens())
@@ -1140,7 +1143,7 @@ void compileLet()
 		//code block for '[expression]'
 		if(symbol() == '[')
 		{
-			fprintf(xmlFile, "%s<symbol> [ </symbol>\n", indentString);
+			//fprintf(xmlFile, "%s<symbol> [ </symbol>\n", indentString);
 			compileExpression();
 			//since next token has been ready by compileExpression()
 			if(tokenType() != SYMBOL || symbol() != ']')
@@ -1150,7 +1153,7 @@ void compileLet()
 				fclose(xmlFile);
 				exit(1);
 			}
-			fprintf(xmlFile, "%s<symbol> ] </symbol>\n", indentString);
+			//fprintf(xmlFile, "%s<symbol> ] </symbol>\n", indentString);
 			//read the next token '=' for next if block
 			if(!hasMoreTokens())
 			{
@@ -1167,7 +1170,7 @@ void compileLet()
 		//code block for symbol '='
 		if(symbol() == '=')
 		{
-			fprintf(xmlFile, "%s<symbol> = </symbol>\n", indentString);
+			//fprintf(xmlFile, "%s<symbol> = </symbol>\n", indentString);
 		}
 		else
 		{
@@ -1188,9 +1191,9 @@ void compileLet()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</letStatement>\n", indentString);		
+	//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</letStatement>\n", indentString);		
 }
 
 void compileWhile()
@@ -1514,12 +1517,12 @@ void compileExpression()
 					break;
 			}
 		}
-		fprintf(xmlFile, "%s<expression>\n", indentString);
-		strcat(indentString, "  "); //increase the indent
-		fprintf(xmlFile, "%s<term>\n", indentString);
+		//fprintf(xmlFile, "%s<expression>\n", indentString);
+		//strcat(indentString, "  "); //increase the indent
+		//fprintf(xmlFile, "%s<term>\n", indentString);
 	}
 	compileTerm();
-	fprintf(xmlFile, "%s</term>\n", indentString);
+	//fprintf(xmlFile, "%s</term>\n", indentString);
 	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 	//assuming that advance has already been called by compileTerm();
 	//look for the occurance of (op term)*
@@ -1595,10 +1598,10 @@ void compileExpression()
 		{
 			advance();
 			//strcat(indentString, "  "); //increase the indent
-			fprintf(xmlFile, "%s<term>\n", indentString);
+			//fprintf(xmlFile, "%s<term>\n", indentString);
 			compileTerm();
 			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-			fprintf(xmlFile, "%s</term>\n", indentString);	
+			//fprintf(xmlFile, "%s</term>\n", indentString);	
 		}
 		//write 'op' lscommand to vm file
 		if(mulOrDivide == 1) // write math.multiply function
@@ -1657,10 +1660,13 @@ void compileTerm()
 		switch(keyWord())
 		{
 			case TRUE:
-				fprintf(xmlFile, "%s<keyword> true </keyword>\n", indentString);
+				//fprintf(xmlFile, "%s<keyword> true </keyword>\n", indentString);
+				writePush(CONST_SEG, 0);
+				writeArithmetic(NOT);
 				break;
 			case FALSE:
-				fprintf(xmlFile, "%s<keyword> false </keyword>\n", indentString);
+				//fprintf(xmlFile, "%s<keyword> false </keyword>\n", indentString);
+				writePush(CONST_SEG, 0);
 				break;
 			case NULL_KEYWORD:
 				fprintf(xmlFile, "%s<keyword> null </keyword>\n", indentString);
