@@ -324,7 +324,7 @@ int main( int argc, char *argv[] )  {
 					constructorCompilationEngine(vmFileName1); //to be modified eventually
 					constructorSymbolTable();
 					constructorVMWriter(vmFileName);
-					compileClass();
+					//compileClass();
 					/*errorLine = readJackFile();
 					if(errorLine>0)
 					{

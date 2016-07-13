@@ -108,7 +108,7 @@ void compileClassVarDec()
 {
 	//variables used for define function in symbol table module
 	char nameOfVar[100];
-	char typeOfVar[20];
+	char typeOfVar[100];
 	kind kindOfVar;
 	//check for static or field keyword code block
 	if(!hasMoreTokens()) //if no more tokens return to compileClass method
@@ -521,7 +521,7 @@ void compileParameterList()
 {
 	//variables used for define function in symbol table module
 	char nameOfVar[100];
-	char typeOfVar[20];
+	char typeOfVar[100];
 	//kind kindOfVar;
 	//make sure to reduce the indent before returning
 	if(!hasMoreTokens()) 
@@ -727,7 +727,7 @@ void compileVarDec()
 {
 	//variables used for define function in symbol table module
 	char nameOfVar[100];
-	char typeOfVar[20];
+	char typeOfVar[100];
 	//check for var keyword code block
 	if(!hasMoreTokens()) //if no more tokens return to compileClass method
 	{			
@@ -1469,6 +1469,9 @@ void compileIf()
 			current = currentToken;
 		//	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 		//	fprintf(xmlFile, "%s</ifStatement>\n", indentString);
+			memset(ifLabel, 0, 100);
+			sprintf(ifLabel, "IF_FALSE_%d", localIndex);
+			writeLabel(ifLabel);
 			return;												
 		}
 	}
