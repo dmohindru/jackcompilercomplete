@@ -15,6 +15,7 @@ void constructorCompilationEngine(char *fileName)
 	numOfParameter = 0;
 	numOfLocals = 0;
 	isVoid = 0; //return type of function 0 = not void, 1 = void
+	loopIfIndex = 0; //index for unique while or if command label
 	//fprintf(xmlFile, "XML Content for file %s\n", fileName);
 	//incrementer = 0;
 	//temp stuff
@@ -1216,10 +1217,15 @@ void compileWhile()
 {
 	//straight away write <whileStatement> tag as it has been
 	//ready by compileStatments function
-	fprintf(xmlFile, "%s<whileStatement>\n", indentString);
-	strcat(indentString, "  "); //increase the indent
-	fprintf(xmlFile, "%s<keyword> while </keyword>\n", indentString);
+	//fprintf(xmlFile, "%s<whileStatement>\n", indentString);
+	//strcat(indentString, "  "); //increase the indent
+	//fprintf(xmlFile, "%s<keyword> while </keyword>\n", indentString);
 	//read next token should be a symbol '('
+	int localIndex = loopIfIndex++;
+	char loopLabel[100];
+	memset(loopLabel, 0, 100);
+	sprintf(loopLabel, "WHILE_START_%d", localIndex);
+	writeLabel(loopLabel);
 	if(!hasMoreTokens())
 	{
 		printf("expected an symbol '(' at line %d\n", currentToken->line);
@@ -1237,10 +1243,15 @@ void compileWhile()
 			fclose(xmlFile);
 			exit(1);
 		}
-		fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
+		//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 	}
 	//compile expression then
 	compileExpression();
+	//write a not statement and jump command to end of loop
+	writeArithmetic(NOT);
+	memset(loopLabel, 0, 100);
+	sprintf(loopLabel, "WHILE_END_%d", localIndex);
+	writeIf(loopLabel);
 	//since next token has been read by compileExpression
 	//and should be a symbol ')'
 	if(tokenType() != SYMBOL || symbol() != ')')
@@ -1250,7 +1261,7 @@ void compileWhile()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
+	//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 	//read next token should be a symbol '{'
 	if(!hasMoreTokens())
 	{
@@ -1269,7 +1280,7 @@ void compileWhile()
 			fclose(xmlFile);
 			exit(1);
 		}
-		fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
+		//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	//read next token and
 	//then compile statements in a while loop
@@ -1284,11 +1295,11 @@ void compileWhile()
 	{
 		advance(); 
 	}
-	fprintf(xmlFile, "%s<statements>\n", indentString);
-	strcat(indentString, "  ");//increase the indent
+	//fprintf(xmlFile, "%s<statements>\n", indentString);
+	//strcat(indentString, "  ");//increase the indent
 	compileStatements();
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</statements>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</statements>\n", indentString);
 	//since the next tokens as already ready by compileStatement()
 	//just check for symbol ;}'
 	if(tokenType() != SYMBOL || symbol() != '}')
@@ -1298,9 +1309,15 @@ void compileWhile()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</whileStatement>\n", indentString);
+	memset(loopLabel, 0, 100);
+	sprintf(loopLabel, "WHILE_START_%d", localIndex);
+	writeGoto(loopLabel);
+	memset(loopLabel, 0, 100);
+	sprintf(loopLabel, "WHILE_END_%d", localIndex);
+	writeLabel(loopLabel);
+	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</whileStatement>\n", indentString);
 }
 void compileReturn()
 {
@@ -1334,9 +1351,12 @@ void compileIf()
 	//straight away write <ifStatement> tag as it has been
 	//ready by compileStatments function
 	//struct fileToken *previousToken = 0;
-	fprintf(xmlFile, "%s<ifStatement>\n", indentString);
-	strcat(indentString, "  "); //increase the indent
-	fprintf(xmlFile, "%s<keyword> if </keyword>\n", indentString);
+	int localIndex = loopIfIndex++;
+	char ifLabel[100];
+	memset(ifLabel, 0, 100);
+	//fprintf(xmlFile, "%s<ifStatement>\n", indentString);
+	//strcat(indentString, "  "); //increase the indent
+	//fprintf(xmlFile, "%s<keyword> if </keyword>\n", indentString);
 	//read next token should be a symbol '('
 	if(!hasMoreTokens())
 	{
@@ -1355,10 +1375,15 @@ void compileIf()
 			fclose(xmlFile);
 			exit(1);
 		}
-		fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
+		//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 	}
 	//compile expression then
 	compileExpression();
+	sprintf(ifLabel, "IF_TRUE_%d", localIndex);
+	writeIf(ifLabel);
+	memset(ifLabel, 0, 100);
+	sprintf(ifLabel, "IF_FALSE_%d", localIndex);
+	writeGoto(ifLabel);
 	//since next token has been read by compileExpression
 	//and should be a symbol ')'
 	if(tokenType() != SYMBOL || symbol() != ')')
@@ -1368,7 +1393,7 @@ void compileIf()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
+	//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 	//read next token should be a symbol '{'
 	if(!hasMoreTokens())
 	{
@@ -1387,7 +1412,7 @@ void compileIf()
 			fclose(xmlFile);
 			exit(1);
 		}
-		fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
+		//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	//read next token and
 	//then compile statements
@@ -1402,11 +1427,14 @@ void compileIf()
 	{
 		advance(); 
 	}
-	fprintf(xmlFile, "%s<statements>\n", indentString);
-	strcat(indentString, "  ");//increase the indent
+	memset(ifLabel, 0, 100);
+	sprintf(ifLabel, "IF_TRUE_%d", localIndex);
+	writeLabel(ifLabel);
+	//fprintf(xmlFile, "%s<statements>\n", indentString);
+	//strcat(indentString, "  ");//increase the indent
 	compileStatements();
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</statements>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</statements>\n", indentString);
 	//since the next tokens as already ready by compileStatement()
 	//just check for symbol }'
 	if(tokenType() != SYMBOL || symbol() != '}')
@@ -1416,7 +1444,7 @@ void compileIf()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
+	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
 	
 	//look for else block
 	//previousToken = currentToken;
@@ -1439,13 +1467,19 @@ void compileIf()
 			//currentToken = previousToken;
 			//current->next = current;
 			current = currentToken;
-			indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-			fprintf(xmlFile, "%s</ifStatement>\n", indentString);
+		//	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+		//	fprintf(xmlFile, "%s</ifStatement>\n", indentString);
 			return;												
 		}
 	}
-	fprintf(xmlFile, "%s<keyword> else </keyword>\n", indentString);
+	//fprintf(xmlFile, "%s<keyword> else </keyword>\n", indentString);
 	//read next token should be a symbol '{'
+	memset(ifLabel, 0, 100);
+	sprintf(ifLabel, "IF_END_%d", localIndex);
+	writeGoto(ifLabel);
+	memset(ifLabel, 0, 100);
+	sprintf(ifLabel, "IF_FALSE_%d", localIndex);
+	writeLabel(ifLabel);
 	if(!hasMoreTokens())
 	{
 		printf("expected an symbol '{' at line %d\n", currentToken->line);
@@ -1463,7 +1497,7 @@ void compileIf()
 			fclose(xmlFile);
 			exit(1);
 		}
-		fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
+		//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	//read next token and
 	//then compile statements
@@ -1478,11 +1512,11 @@ void compileIf()
 	{
 		advance(); 
 	}
-	fprintf(xmlFile, "%s<statements>\n", indentString);
-	strcat(indentString, "  ");//increase the indent
+	//fprintf(xmlFile, "%s<statements>\n", indentString);
+	//strcat(indentString, "  ");//increase the indent
 	compileStatements();
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</statements>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</statements>\n", indentString);
 	//since the next tokens as already ready by compileStatement()
 	//just check for symbol }'
 	if(tokenType() != SYMBOL || symbol() != '}')
@@ -1492,9 +1526,12 @@ void compileIf()
 		fclose(xmlFile);
 		exit(1);
 	}
-	fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	fprintf(xmlFile, "%s</ifStatement>\n", indentString);
+	memset(ifLabel, 0, 100);
+	sprintf(ifLabel, "IF_END_%d", localIndex);
+	writeLabel(ifLabel);
+	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//fprintf(xmlFile, "%s</ifStatement>\n", indentString);
 }
 void compileExpression()
 {
