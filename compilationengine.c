@@ -1875,7 +1875,7 @@ void compileTerm()
 		switch(symbol())
 		{
 			case '(':
-				fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
+				//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 				compileExpression();
 				//since the next token must have been read by compileExpression() just check for ')' character
 				if(tokenType() != SYMBOL || symbol() != ')')
@@ -1886,10 +1886,10 @@ void compileTerm()
 					fclose(xmlFile);
 					exit(1);
 				}
-				fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
+				//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 				break;
 			case '~':
-				fprintf(xmlFile, "%s<symbol> ~ </symbol>\n", indentString);
+				//fprintf(xmlFile, "%s<symbol> ~ </symbol>\n", indentString);
 				if(!hasMoreTokens()) //advance for compileTerm
 				{
 					printf("expected a term at line %d\n", currentToken->line);
@@ -1901,14 +1901,15 @@ void compileTerm()
 				{
 					advance();
 				}
-				strcat(indentString, "  "); //increase the indent
-				fprintf(xmlFile, "%s<term>\n", indentString);
+				//strcat(indentString, "  "); //increase the indent
+				//fprintf(xmlFile, "%s<term>\n", indentString);
 				compileTerm();
-				fprintf(xmlFile, "%s</term>\n", indentString);
-				indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+				writeArithmetic(NOT);
+				//fprintf(xmlFile, "%s</term>\n", indentString);
+				//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 				return;
 			case '-':
-				fprintf(xmlFile, "%s<symbol> - </symbol>\n", indentString);
+				//fprintf(xmlFile, "%s<symbol> - </symbol>\n", indentString);
 				if(!hasMoreTokens()) //advance for compileTerm
 				{
 					printf("expected a term at line %d\n", currentToken->line);
@@ -1920,11 +1921,12 @@ void compileTerm()
 				{
 					advance();
 				}
-				strcat(indentString, "  "); //increase the indent
-				fprintf(xmlFile, "%s<term>\n", indentString);
+				//strcat(indentString, "  "); //increase the indent
+				//fprintf(xmlFile, "%s<term>\n", indentString);
 				compileTerm();
-				fprintf(xmlFile, "%s</term>\n", indentString);
-				indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+				writeArithmetic(NEG);
+				//fprintf(xmlFile, "%s</term>\n", indentString);
+				//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 				return;
 			default:
 				printf("unknown term format at line %d\n", currentToken->line);
