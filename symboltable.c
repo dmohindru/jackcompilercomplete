@@ -202,7 +202,7 @@ char* typeOf(char *name)
 	{
 		if(!strcmp(entry->name, name))
 		{
-			typeSymbol = (char*)malloc(sizeof(char)*20);
+			typeSymbol = (char*)malloc(sizeof(char)*100);
 			strcpy(typeSymbol, entry->type);
 			return typeSymbol;
 		}
@@ -230,7 +230,7 @@ char* typeOf(char *name)
 	{
 		if(!strcmp(entry->name, name))
 		{
-			typeSymbol = (char*)malloc(sizeof(char)*20);
+			typeSymbol = (char*)malloc(sizeof(char)*100);
 			strcpy(typeSymbol, entry->type);
 			return typeSymbol;
 		}

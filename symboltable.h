@@ -16,7 +16,7 @@ typedef enum kind
 typedef struct symbolTable
 {
 	char name[100];
-	char type[20];
+	char type[100];
 	kind kindType;
 	int indexSymbol;
 	struct symbolTable *next;

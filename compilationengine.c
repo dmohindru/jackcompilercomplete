@@ -957,8 +957,10 @@ void compileDo()
 	//strcat(indentString, "  "); //increase the indent
 	//fprintf(xmlFile, "%s<keyword> do </keyword>\n", indentString);
 	//read next token which should be identifier
-	char functionCallName[200];
+	char functionCallName[200], objectName[100];
+	char *objectClass;
 	memset(functionCallName, 0, 200);
+	memset(objectName, 0, 100);
 	//numOfParameter = 0;
 	if(!hasMoreTokens())
 	{
@@ -978,7 +980,19 @@ void compileDo()
 			exit(1);
 		}
 		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
-		strcat(functionCallName, identifier());
+		//get the type of for current identifier to check if its object of some class
+		objectClass = typeOf(identifier());
+		//printf("objectClass %s\n", objectClass);
+		if(!objectClass)//identifier is a name of object so its a method call
+		{
+			strcat(functionCallName, objectClass);
+			strcpy(objectName, identifier());
+		}
+		else //its a call to some class function or constructor
+		{
+			strcat(functionCallName, identifier());
+		}
+		
 	}
 	//read next token as symbol '(' or '.'
 	if(!hasMoreTokens())
@@ -1056,6 +1070,24 @@ void compileDo()
 			exit(1);
 		}
 	}
+	//if do call involves call to object's method push that object before
+	//compiling expression list
+	if(!objectClass) //its a call to objects method
+	{
+		//get the memory segment and index for object
+		switch(kindOf(objectName))
+		{
+			case STATIC_SMBL: //dont have logic what to put here
+			case FIELD_SMBL:  //will deal with it later
+			case ARG_SMBL:
+				break;
+			case VAR_SMBL:
+				writePush(LOCAL_SEG, indexOf(objectName));
+				break;
+			case NONE: //we should not land into this code by just in case
+				break;
+		}
+	}
 	compileExpressionList();
 	//since next token has been read by compileExpressionList
 	//next token should be ')'
@@ -1091,7 +1123,11 @@ void compileDo()
 	}
 	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 	//fprintf(xmlFile, "%s</doStatement>\n", indentString);
-	writeCall(functionCallName, numOfParameter);		
+	writeCall(functionCallName, numOfParameter);
+	//discard the return value on stack by previous function call
+	writePop(TEMP_SEG, 0);	
+	//free objectClass buffer here
+	free(objectClass);	
 }
 void compileLet()
 {
