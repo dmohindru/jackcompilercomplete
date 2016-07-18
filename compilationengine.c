@@ -961,7 +961,7 @@ void compileDo()
 	char *objectClass;
 	memset(functionCallName, 0, 200);
 	memset(objectName, 0, 100);
-	//numOfParameter = 0;
+	numOfParameter = 0;
 	if(!hasMoreTokens())
 	{
 		printf("expected an identifier at line %d\n", currentToken->line);
@@ -983,7 +983,7 @@ void compileDo()
 		//get the type of for current identifier to check if its object of some class
 		objectClass = typeOf(identifier());
 		//printf("objectClass %s\n", objectClass);
-		if(!objectClass)//identifier is a name of object so its a method call
+		if(objectClass)//identifier is a name of object so its a method call
 		{
 			strcat(functionCallName, objectClass);
 			strcpy(objectName, identifier());
@@ -1072,8 +1072,9 @@ void compileDo()
 	}
 	//if do call involves call to object's method push that object before
 	//compiling expression list
-	if(!objectClass) //its a call to objects method
+	if(objectClass) //its a call to objects method
 	{
+		numOfParameter++; //increment number of paramenter for pushing object
 		//get the memory segment and index for object
 		switch(kindOf(objectName))
 		{
@@ -1984,13 +1985,13 @@ void compileTerm()
 		advance();
 	}
 	//advance();//temp stuff
-	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 }
 void compileExpressionList()
 {
-	numOfParameter = 0;
-	fprintf(xmlFile, "%s<expressionList>\n", indentString);
-	strcat(indentString, "  "); //increase the indent
+	//numOfParameter = 0;
+	//fprintf(xmlFile, "%s<expressionList>\n", indentString);
+	//strcat(indentString, "  "); //increase the indent
 	/*if(tokenType() == SYMBOL && symbol() == ')')
 	{
 		indentString[strlen(indentString)-2] = '\0'; //decrease the indent
