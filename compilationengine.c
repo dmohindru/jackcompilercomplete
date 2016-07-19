@@ -16,6 +16,7 @@ void constructorCompilationEngine(char *fileName)
 	numOfLocals = 0;
 	isVoid = 0; //return type of function 0 = not void, 1 = void
 	loopIfIndex = 0; //index for unique while or if command label
+	isConstructor = 0; //if subroutine is constructor 0 = Not, 1 = Is Constuctor
 	//fprintf(xmlFile, "XML Content for file %s\n", fileName);
 	//incrementer = 0;
 	//temp stuff
@@ -302,12 +303,14 @@ void compileSubroutine()
 	//compileSubroutine which is called recussively
 	char vmFunctionName[200];
 	isVoid = 0;
+	isConstructor = 0;
 	memset(vmFunctionName, 0, 200); //reset vmFunctionName
 	if(tokenType() == KEYWORD)
 	{
 		switch(keyWord())
 		{
 			case CONSTRUCTOR:
+				isConstructor = 1;
 				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
 				//strcat(indentString, "  ");//increase the indent
 				//fprintf(xmlFile, "%s<keyword> constructor </keyword>\n", indentString);
@@ -482,6 +485,13 @@ void compileSubroutine()
 	//**should have by now total number of local in a function
 	sprintf(vmFunctionName, "%s.%s", className, functionName);
 	writeFunction(vmFunctionName, numOfLocals);
+	//if its a constructor then allocate memory for field var here
+	if(isConstructor)
+	{
+		writePush(CONST_SEG, varCount(FIELD_SMBL));
+		writeCall("Memory.alloc", 1);
+		writePop(POINTER_SEG, 0);
+	}
 	//compile statements
 	//fprintf(xmlFile, "%s<statements>\n", indentString);
 	//strcat(indentString, "  ");//increase the indent
@@ -906,7 +916,7 @@ void compileVarDec()
 	compileVarDec();
 }
 void compileStatements()
-{
+{	
 	if(tokenType() == KEYWORD) //since next token has already been ready by compileVarDec
 	{							//just need to check here for statement keywords
 		switch(keyWord())
@@ -1738,8 +1748,10 @@ void compileExpression()
 }
 void compileTerm()
 {
-	char functionCallName[200];
+	char functionCallName[200], objectName[100];
+	char *objectClass;
 	memset(functionCallName, 0, 200);
+	memset(objectName, 0, 100);;
 	
 	strcat(indentString, "  "); //increase the indent
 	if(tokenType() == INT_CONST) //int constant
@@ -1829,6 +1841,22 @@ void compileTerm()
 			else if(symbol() == '.') //process className|varName.subroutineName '(' expressionList ')'
 			{
 				//fprintf(xmlFile, "%s<symbol> . </symbol>\n", indentString);
+				//get the type of from buffer functionCallName to check if its object of some class
+				numOfParameter = 0;
+				objectClass = typeOf(functionCallName);
+				//printf("objectClass %s\n", objectClass);
+				if(objectClass)//identifier is a name of object so its a method call
+				{
+					strcpy(objectName, functionCallName);
+					memset(functionCallName, 0, 200);
+					strcpy(functionCallName, objectClass);
+					//strcat(functionCallName, objectClass);
+					
+				}
+				/*else //its a call to some class function or constructor
+				{
+					strcat(functionCallName, identifier());
+				}*/
 				strcat(functionCallName, ".");
 				if(!hasMoreTokens()) //read subRoutineName
 				{
@@ -1870,6 +1898,23 @@ void compileTerm()
 					exit(1);
 				}
 				//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
+				if(objectClass) //its a call to objects method
+				{
+					numOfParameter++; //increment number of paramenter for pushing object
+					//get the memory segment and index for object
+					switch(kindOf(objectName))
+					{
+						case STATIC_SMBL: //dont have logic what to put here
+						case FIELD_SMBL:  //will deal with it later
+						case ARG_SMBL:
+							break;
+						case VAR_SMBL:
+							writePush(LOCAL_SEG, indexOf(objectName));
+							break;
+						case NONE: //we should not land into this code by just in case
+						break;
+					}
+				}
 				compileExpressionList();
 				//since the next token must have been read by compileExpressionList() just check for ')' character
 				if(tokenType() != SYMBOL || symbol() != ')')
