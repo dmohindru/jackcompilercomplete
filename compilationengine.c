@@ -1246,7 +1246,7 @@ void compileLet()
 			writePop(STATIC_SEG, indexOf(vName));
 			break;
 		case FIELD_SMBL:
-			writePop(STATIC_SEG, indexOf(vName)); //need modification here
+			writePop(THIS_SEG, indexOf(vName)); //need modification here
 			break;
 		case ARG_SMBL:
 			writePop(ARG_SEG, indexOf(vName));
@@ -1777,10 +1777,11 @@ void compileTerm()
 				writePush(CONST_SEG, 0);
 				break;
 			case NULL_KEYWORD:
-				fprintf(xmlFile, "%s<keyword> null </keyword>\n", indentString);
+				//fprintf(xmlFile, "%s<keyword> null </keyword>\n", indentString);
 				break;
 			case THIS:
-				fprintf(xmlFile, "%s<keyword> this </keyword>\n", indentString);
+				//fprintf(xmlFile, "%s<keyword> this </keyword>\n", indentString);
+				writePush(POINTER_SEG, 0);
 				break;
 			default:
 				printf("unknown keyword constant for term decleration at line %d\n", currentToken->line);
