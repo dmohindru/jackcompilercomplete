@@ -1001,12 +1001,12 @@ void compileDo()
 		//printf("objectClass %s\n", objectClass);
 		if(objectClass)//identifier is a name of object so its a method call
 		{
-			strcat(functionCallName, objectClass);
+			strcpy(functionCallName, objectClass);
 			strcpy(objectName, identifier());
 		}
 		else //its a call to some class function or constructor
 		{
-			strcat(functionCallName, identifier());
+			strcpy(functionCallName, identifier());
 		}
 		
 	}
@@ -1078,7 +1078,7 @@ void compileDo()
 		{
 			//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 		}
-		else
+		else //use if(symbol != '(') to finish else block
 		{
 			printf("expected a symbol '(' or '.' at line %d\n", currentToken->line);
 			freeToken();
@@ -1094,12 +1094,14 @@ void compileDo()
 		//get the memory segment and index for object
 		switch(kindOf(objectName))
 		{
-			case STATIC_SMBL: //dont have logic what to put here
+			case STATIC_SMBL: 
+				writePush(STATIC_SEG, indexOf(objectName));
 				break;
 			case FIELD_SMBL:
 				writePush(THIS_SEG, indexOf(objectName));
 				break;
 			case ARG_SMBL:
+				writePush(ARG_SEG, indexOf(objectName));
 				break;
 			case VAR_SMBL:
 				writePush(LOCAL_SEG, indexOf(objectName));
@@ -1633,7 +1635,9 @@ void compileExpression()
 		//strcat(indentString, "  "); //increase the indent
 		//fprintf(xmlFile, "%s<term>\n", indentString);
 	}
+	//printf("In compileExpression function, before 1st compileTerm\n");
 	compileTerm();
+	//printf("In compileExpression function, after 1st compileTerm\n");
 	//fprintf(xmlFile, "%s</term>\n", indentString);
 	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 	//assuming that advance has already been called by compileTerm();
@@ -1711,11 +1715,13 @@ void compileExpression()
 			advance();
 			//strcat(indentString, "  "); //increase the indent
 			//fprintf(xmlFile, "%s<term>\n", indentString);
+			//printf("In compileExpression function, before 2nd compileTerm\n");
 			compileTerm();
+			//printf("In compileExpression function, after 2nd compileTerm\n");
 			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 			//fprintf(xmlFile, "%s</term>\n", indentString);	
 		}
-		//write 'op' lscommand to vm file
+		//write 'op' command to vm file
 		if(mulOrDivide == 1) // write math.multiply function
 		{
 			writeCall("Math.multiply", 2); 
@@ -1760,9 +1766,9 @@ void compileTerm()
 	char functionCallName[200], objectName[100];
 	char *objectClass;
 	memset(functionCallName, 0, 200);
-	memset(objectName, 0, 100);;
+	memset(objectName, 0, 100);
 	
-	strcat(indentString, "  "); //increase the indent
+	//strcat(indentString, "  "); //increase the indent
 	if(tokenType() == INT_CONST) //int constant
 	{
 		writePush(CONST_SEG, intVal());
@@ -1770,7 +1776,7 @@ void compileTerm()
 	}
 	else if(tokenType() == STRING_CONST) //string constant
 	{
-		fprintf(xmlFile, "%s<stringConstant> %s </stringConstant>\n", indentString, stringVal());
+		//fprintf(xmlFile, "%s<stringConstant> %s </stringConstant>\n", indentString, stringVal());
 	}
 	else if(tokenType() == KEYWORD) //keyword constant
 	{
@@ -1803,7 +1809,7 @@ void compileTerm()
 	{
 		//numOfParameter = 0;
 		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
-		strcat(functionCallName, identifier());
+		strcpy(functionCallName, identifier());
 		if(!hasMoreTokens())
 		{
 			printf("expected ';' after term identifier at line %d\n", currentToken->line);
@@ -1819,7 +1825,7 @@ void compileTerm()
 		{
 			if(symbol() == '[') //process varName '['expression']'
 			{
-				fprintf(xmlFile, "%s<symbol> [ </symbol>\n", indentString);
+				//fprintf(xmlFile, "%s<symbol> [ </symbol>\n", indentString);
 				compileExpression();
 				//since the next token must have been read by compileExpression() just check for ']' character
 				if(tokenType() != SYMBOL || symbol() != ']')
@@ -1830,11 +1836,12 @@ void compileTerm()
 					fclose(xmlFile);
 					exit(1);
 				}
-				fprintf(xmlFile, "%s<symbol> ] </symbol>\n", indentString);
+				//fprintf(xmlFile, "%s<symbol> ] </symbol>\n", indentString);
 			}
 			else if(symbol() == '(') //process subroutineName'(' expressionList ')'
 			{
 				//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
+				numOfParameter = 0;
 				compileExpressionList();
 				//since the next token must have been read by compileExpressionList() just check for ')' character
 				if(tokenType() != SYMBOL || symbol() != ')')
@@ -1940,6 +1947,7 @@ void compileTerm()
 				}
 				//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 				writeCall(functionCallName, numOfParameter);
+				free(objectClass);
 				
 			}
 			else //it may be a operator or ';' symbol just return
@@ -2067,11 +2075,11 @@ void compileExpressionList()
 	{
 		if(tokenType() != SYMBOL || symbol() != ',')
 		{
-			indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-			fprintf(xmlFile, "%s</expressionList>\n", indentString);
+			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+			//fprintf(xmlFile, "%s</expressionList>\n", indentString);
 			return;
 		}
-		fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
+		//fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
 		/* Below is a desi jugad for incrementing number of numOfParameters
 		 * as some of the logic of empty expressionList lies in functoin
 		 * compileExpression
