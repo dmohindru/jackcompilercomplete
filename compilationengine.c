@@ -16,7 +16,7 @@ void constructorCompilationEngine(char *fileName)
 	numOfLocals = 0;
 	isVoid = 0; //return type of function 0 = not void, 1 = void
 	loopIfIndex = 0; //index for unique while or if command label
-	isConstructor = 0; //if subroutine is constructor 0 = Not, 1 = Is Constuctor
+	functionType = 0; //if subroutine is constructor 0 = Not, 1 = Is Constuctor
 	//fprintf(xmlFile, "XML Content for file %s\n", fileName);
 	//incrementer = 0;
 	//temp stuff
@@ -303,24 +303,25 @@ void compileSubroutine()
 	//compileSubroutine which is called recussively
 	char vmFunctionName[200];
 	isVoid = 0;
-	isConstructor = 0;
+	functionType = 0; //by default functionType is for function subroutine
 	memset(vmFunctionName, 0, 200); //reset vmFunctionName
 	if(tokenType() == KEYWORD)
 	{
 		switch(keyWord())
 		{
 			case CONSTRUCTOR:
-				isConstructor = 1;
+				functionType = 1;
 				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
 				//strcat(indentString, "  ");//increase the indent
 				//fprintf(xmlFile, "%s<keyword> constructor </keyword>\n", indentString);
 				break;
-			case FUNCTION:
+			case METHOD:
+				functionType = 2;
 				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
 				//strcat(indentString, "  ");//increase the indent
 				//fprintf(xmlFile, "%s<keyword> function </keyword>\n", indentString); 
 				break;
-			case METHOD:
+			case FUNCTION:
 				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
 				//strcat(indentString, "  ");//increase the indent
 				//fprintf(xmlFile, "%s<keyword> method </keyword>\n", indentString);
@@ -486,10 +487,15 @@ void compileSubroutine()
 	sprintf(vmFunctionName, "%s.%s", className, functionName);
 	writeFunction(vmFunctionName, numOfLocals);
 	//if its a constructor then allocate memory for field var here
-	if(isConstructor)
+	if(functionType == 1)
 	{
 		writePush(CONST_SEG, varCount(FIELD_SMBL));
 		writeCall("Memory.alloc", 1);
+		writePop(POINTER_SEG, 0);
+	}
+	else if(functionType == 2)
+	{
+		writePush(ARG_SEG, 0);
 		writePop(POINTER_SEG, 0);
 	}
 	//compile statements
@@ -1089,7 +1095,10 @@ void compileDo()
 		switch(kindOf(objectName))
 		{
 			case STATIC_SMBL: //dont have logic what to put here
-			case FIELD_SMBL:  //will deal with it later
+				break;
+			case FIELD_SMBL:
+				writePush(THIS_SEG, indexOf(objectName));
+				break;
 			case ARG_SMBL:
 				break;
 			case VAR_SMBL:
@@ -1825,7 +1834,7 @@ void compileTerm()
 			}
 			else if(symbol() == '(') //process subroutineName'(' expressionList ')'
 			{
-				fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
+				//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 				compileExpressionList();
 				//since the next token must have been read by compileExpressionList() just check for ')' character
 				if(tokenType() != SYMBOL || symbol() != ')')
@@ -1906,7 +1915,10 @@ void compileTerm()
 					switch(kindOf(objectName))
 					{
 						case STATIC_SMBL: //dont have logic what to put here
-						case FIELD_SMBL:  //will deal with it later
+							break;
+						case FIELD_SMBL:
+							writePush(THIS_SEG, indexOf(objectName));
+							break;
 						case ARG_SMBL:
 							break;
 						case VAR_SMBL:
@@ -1939,7 +1951,7 @@ void compileTerm()
 						writePush(STATIC_SEG, indexOf(functionCallName));
 						break;
 					case FIELD_SMBL:
-						writePush(STATIC_SEG, indexOf(functionCallName)); //need modification here
+						writePush(THIS_SEG, indexOf(functionCallName));
 						break;
 					case ARG_SMBL:
 						writePush(ARG_SEG, indexOf(functionCallName));
