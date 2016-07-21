@@ -490,7 +490,7 @@ void compileSubroutine()
 	if(functionType == 1)
 	{
 		writePush(CONST_SEG, varCount(FIELD_SMBL));
-		writeCall("Memory.alloc", 1);
+		writeCall("Memory.Alloc", 1);
 		writePop(POINTER_SEG, 0);
 	}
 	else if(functionType == 2)
