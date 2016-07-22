@@ -490,7 +490,7 @@ void compileSubroutine()
 	if(functionType == 1)
 	{
 		writePush(CONST_SEG, varCount(FIELD_SMBL));
-		writeCall("Memory.Alloc", 1);
+		writeCall("Memory.alloc", 1);
 		writePop(POINTER_SEG, 0);
 	}
 	else if(functionType == 2)
@@ -973,10 +973,11 @@ void compileDo()
 	//strcat(indentString, "  "); //increase the indent
 	//fprintf(xmlFile, "%s<keyword> do </keyword>\n", indentString);
 	//read next token which should be identifier
-	char functionCallName[200], objectName[100];
+	char functionCallName[200], objectName[100], tempBuff[100];
 	char *objectClass;
 	memset(functionCallName, 0, 200);
 	memset(objectName, 0, 100);
+	memset(tempBuff, 0, 100);
 	numOfParameter = 0;
 	if(!hasMoreTokens())
 	{
@@ -1028,7 +1029,7 @@ void compileDo()
 			fclose(xmlFile);
 			exit(1);
 		}
-		if(symbol() == '.') //found '.' symbol
+		if(symbol() == '.') //found '.' symbol its a call to Class.function() or object.method()
 		{
 			//fprintf(xmlFile, "%s<symbol> . </symbol>\n", indentString);
 			strcat(functionCallName, ".");
@@ -1074,8 +1075,13 @@ void compileDo()
 				}
 			}				
 		}
-		if(symbol() == '(') //need to check this block of code <--------------
+		if(symbol() == '(') //its a call to method() 
 		{
+			numOfParameter++;
+			writePush(POINTER_SEG, 0);
+			strcpy(tempBuff, functionCallName); //copy method name to temp buff
+			memset(functionCallName, 0, 200);
+			sprintf(functionCallName, "%s.%s", className, tempBuff); //make a method name as Class.method
 			//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 		}
 		else //use if(symbol != '(') to finish else block
