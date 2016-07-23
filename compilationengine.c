@@ -975,6 +975,7 @@ void compileDo()
 	//read next token which should be identifier
 	char functionCallName[200], objectName[100], tempBuff[100];
 	char *objectClass;
+	int methodCallOnly = 1; //to track if its only call to method 1 = true, 0 = false
 	memset(functionCallName, 0, 200);
 	memset(objectName, 0, 100);
 	memset(tempBuff, 0, 100);
@@ -1032,6 +1033,7 @@ void compileDo()
 		if(symbol() == '.') //found '.' symbol its a call to Class.function() or object.method()
 		{
 			//fprintf(xmlFile, "%s<symbol> . </symbol>\n", indentString);
+			methodCallOnly = 0;
 			strcat(functionCallName, ".");
 			//read next token should be a identifier
 			if(!hasMoreTokens())
@@ -1077,11 +1079,14 @@ void compileDo()
 		}
 		if(symbol() == '(') //its a call to method() 
 		{
-			numOfParameter++;
-			writePush(POINTER_SEG, 0);
-			strcpy(tempBuff, functionCallName); //copy method name to temp buff
-			memset(functionCallName, 0, 200);
-			sprintf(functionCallName, "%s.%s", className, tempBuff); //make a method name as Class.method
+			if(methodCallOnly)
+			{
+				numOfParameter++;
+				writePush(POINTER_SEG, 0);
+				strcpy(tempBuff, functionCallName); //copy method name to temp buff
+				memset(functionCallName, 0, 200);
+				sprintf(functionCallName, "%s.%s", className, tempBuff); //make a method name as Class.method
+			}
 			//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 		}
 		else //use if(symbol != '(') to finish else block
@@ -1769,10 +1774,11 @@ void compileExpression()
 }
 void compileTerm()
 {
-	char functionCallName[200], objectName[100];
+	char functionCallName[200], objectName[100], tempBuff[100];
 	char *objectClass;
 	memset(functionCallName, 0, 200);
 	memset(objectName, 0, 100);
+	memset(tempBuff, 0, 100);
 	
 	//strcat(indentString, "  "); //increase the indent
 	if(tokenType() == INT_CONST) //int constant
@@ -1848,6 +1854,11 @@ void compileTerm()
 			{
 				//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 				numOfParameter = 0;
+				numOfParameter++;
+				writePush(POINTER_SEG, 0);
+				strcpy(tempBuff, functionCallName); //copy method name to temp buff
+				memset(functionCallName, 0, 200);
+				sprintf(functionCallName, "%s.%s", className, tempBuff); //make a method name as Class.method
 				compileExpressionList();
 				//since the next token must have been read by compileExpressionList() just check for ')' character
 				if(tokenType() != SYMBOL || symbol() != ')')
@@ -1928,11 +1939,13 @@ void compileTerm()
 					switch(kindOf(objectName))
 					{
 						case STATIC_SMBL: //dont have logic what to put here
+							writePush(STATIC_SEG, indexOf(objectName));
 							break;
 						case FIELD_SMBL:
 							writePush(THIS_SEG, indexOf(objectName));
 							break;
 						case ARG_SMBL:
+							writePush(ARG_SEG, indexOf(objectName));
 							break;
 						case VAR_SMBL:
 							writePush(LOCAL_SEG, indexOf(objectName));
