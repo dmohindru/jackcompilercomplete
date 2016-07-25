@@ -1166,6 +1166,7 @@ void compileLet()
 {
 	//straight away write <letStatement> tag as it has been
 	//ready by compileStatments function
+	int isArray = 0; //variable to keep track if array assignment is present in let statement 0=No, 1=Yes 
 	char vName[100]; //name of variable
 	memset(vName, 0, 100); //reset varName buffer
 	//fprintf(xmlFile, "%s<letStatement>\n", indentString);
@@ -1214,7 +1215,27 @@ void compileLet()
 		if(symbol() == '[')
 		{
 			//fprintf(xmlFile, "%s<symbol> [ </symbol>\n", indentString);
+			isArray = 1;
 			compileExpression();
+			//add array start address to get desired memory location
+			switch(kindOf(vName))
+			{
+				case STATIC_SMBL:
+					writePush(STATIC_SEG, indexOf(vName));
+					break;
+				case FIELD_SMBL:
+					writePush(THIS_SEG, indexOf(vName));
+					break;
+				case ARG_SMBL:
+					writePush(ARG_SEG, indexOf(vName));
+					break;
+				case VAR_SMBL:
+					writePush(LOCAL_SEG, indexOf(vName));
+					break;
+				default:	//we should never land into this code but just in case
+					return;
+			}
+			writeArithmetic(ADD);
 			//since next token has been ready by compileExpression()
 			if(tokenType() != SYMBOL || symbol() != ']')
 			{
@@ -1261,22 +1282,33 @@ void compileLet()
 		fclose(xmlFile);
 		exit(1);
 	}
-	//this logic might have to be moved to other place in this function
-	switch(kindOf(vName))
+	
+	if(isArray)
 	{
-		case STATIC_SMBL:
-			writePop(STATIC_SEG, indexOf(vName));
-			break;
-		case FIELD_SMBL:
-			writePop(THIS_SEG, indexOf(vName)); //need modification here
-			break;
-		case ARG_SMBL:
-			writePop(ARG_SEG, indexOf(vName));
-			break;
-		case VAR_SMBL:
-			writePop(LOCAL_SEG, indexOf(vName));
-			break;
+		writePop(TEMP_SEG, 0);
+		writePop(POINTER_SEG, 1);
+		writePush(TEMP_SEG, 0);
+		writePop(THAT_SEG, 0);
 	}
+	else
+	{
+		switch(kindOf(vName))
+		{
+			case STATIC_SMBL:
+				writePop(STATIC_SEG, indexOf(vName));
+				break;
+			case FIELD_SMBL:
+				writePop(THIS_SEG, indexOf(vName));
+				break;
+			case ARG_SMBL:
+				writePop(ARG_SEG, indexOf(vName));
+				break;
+			case VAR_SMBL:
+				writePop(LOCAL_SEG, indexOf(vName));
+				break;
+		}
+	}
+	
 	//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
 	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 	//fprintf(xmlFile, "%s</letStatement>\n", indentString);		
@@ -1839,6 +1871,26 @@ void compileTerm()
 			{
 				//fprintf(xmlFile, "%s<symbol> [ </symbol>\n", indentString);
 				compileExpression();
+				switch(kindOf(functionCallName))
+				{
+					case STATIC_SMBL:
+						writePush(STATIC_SEG, indexOf(functionCallName));
+						break;
+					case FIELD_SMBL:
+						writePush(THIS_SEG, indexOf(functionCallName));
+						break;
+					case ARG_SMBL:
+						writePush(ARG_SEG, indexOf(functionCallName));
+						break;
+					case VAR_SMBL:
+						writePush(LOCAL_SEG, indexOf(functionCallName));
+						break;
+					default:	//we should never land into this code but just in case
+						return;
+				}
+				writeArithmetic(ADD);
+				writePop(POINTER_SEG, 1);
+				writePush(THAT_SEG, 0);
 				//since the next token must have been read by compileExpression() just check for ']' character
 				if(tokenType() != SYMBOL || symbol() != ']')
 				{
