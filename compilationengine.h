@@ -19,7 +19,7 @@ int numOfParameter, numOfLocals, isVoid, loopIfIndex, functionType;
 //functionType = 0 for function, 1 for constructor, 2 for method 
 //char currentFunction[50];
 //int incrementer;
-void constructorCompilationEngine(char *filename);
+void constructorCompilationEngine();
 void compileClass();
 void compileClassVarDec();
 void compileSubroutine();

@@ -314,14 +314,14 @@ int main( int argc, char *argv[] )  {
 					memset(jackFileName,0,50);
 					printf("--------------------------\n");
 					snprintf(jackFileName, filePeriod - ent->d_name + 1, "%s", ent->d_name);
-					sprintf(vmFileName1,"%s/%s.xml",argv[1],jackFileName); //temp to be removed eventually
+					//sprintf(vmFileName1,"%s/%s.xml",argv[1],jackFileName); //temp to be removed eventually
 					sprintf(vmFileName,"%s/%s.vm",argv[1],jackFileName);
-					printf("xml file name %s\n", vmFileName1); //temp to be removed eventually
+					//printf("xml file name %s\n", vmFileName1); //temp to be removed eventually
 					printf("vm file name %s\n", vmFileName);
 					memset(jackFileName,0,50);
 					sprintf(jackFileName,"%s/%s",argv[1],ent->d_name);
 					constructorTokenizer(jackFileName);
-					constructorCompilationEngine(vmFileName1); //to be modified eventually
+					constructorCompilationEngine(); //to be modified eventually
 					constructorSymbolTable();
 					constructorVMWriter(vmFileName);
 					compileClass();
@@ -355,11 +355,11 @@ int main( int argc, char *argv[] )  {
 			//printf("--------------------------\n");
 			printf ("Reading file: %s\n", argv[1]);
 			snprintf(jackFileName, filePeriod - argv[1] + 1, "%s", argv[1]);
-			sprintf(vmFileName1,"%s.xml",jackFileName); //temp to be removed eventually
+			//sprintf(vmFileName1,"%s.xml",jackFileName); //temp to be removed eventually
 			sprintf(vmFileName,"%s.vm",jackFileName);
 			//printf("xml file name %s\n", vmFileName);
 			constructorTokenizer(argv[1]);
-			constructorCompilationEngine(vmFileName1); //to be modified eventually
+			constructorCompilationEngine(); //to be modified eventually
 			constructorSymbolTable();
 			constructorVMWriter(vmFileName);
 			//testVMCommands(); // a very temp stuff

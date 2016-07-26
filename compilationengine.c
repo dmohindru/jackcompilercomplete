@@ -5,7 +5,7 @@
  * Date: 23/03/2016
  */
 #include "compilationengine.h"
-void constructorCompilationEngine(char *fileName)
+void constructorCompilationEngine()
 {
 	//reset className, functionName buffer
 	memset(className, 0, 100); 
@@ -1834,6 +1834,7 @@ void compileTerm()
 				break;
 			case NULL_KEYWORD:
 				//fprintf(xmlFile, "%s<keyword> null </keyword>\n", indentString);
+				writePush(CONST_SEG, 0);
 				break;
 			case THIS:
 				//fprintf(xmlFile, "%s<keyword> this </keyword>\n", indentString);
