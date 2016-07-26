@@ -112,15 +112,15 @@ void compileClassVarDec()
 			switch(keyWord())
 			{
 				case STATIC:
-					fprintf(xmlFile, "%s<classVarDec>\n", indentString);
-					strcat(indentString, "  "); //increase the indent
-					fprintf(xmlFile, "%s<keyword> static </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<classVarDec>\n", indentString);
+					//strcat(indentString, "  "); //increase the indent
+					//fprintf(xmlFile, "%s<keyword> static </keyword>\n", indentString);
 					kindOfVar = STATIC_SMBL;
 					break;
 				case FIELD:
-					fprintf(xmlFile, "%s<classVarDec>\n", indentString);
-					strcat(indentString, "  ");
-					fprintf(xmlFile, "%s<keyword> field </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<classVarDec>\n", indentString);
+					//strcat(indentString, "  ");
+					//fprintf(xmlFile, "%s<keyword> field </keyword>\n", indentString);
 					kindOfVar = FIELD_SMBL; 
 					break;
 				default:   //static or field keyword not found return to compileClass Method
@@ -150,15 +150,15 @@ void compileClassVarDec()
 			switch(keyWord())
 			{
 				case INT:
-					fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
-					fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
-					fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
+					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
@@ -170,7 +170,7 @@ void compileClassVarDec()
 		}
 		else if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(typeOfVar, identifier());
 			
 		}
@@ -195,7 +195,7 @@ void compileClassVarDec()
 		advance(); //get next token for variable name
 		if(tokenType() == IDENTIFIER)
 		{
-			fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(nameOfVar, identifier());
 		}
 		else //not a valid variable name token
@@ -228,15 +228,15 @@ void compileClassVarDec()
 				memset(nameOfVar, 0, 20);
 				if(symbol() == ';')
 				{
-					fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
+					//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
 					//strncpy(indentString, indentString, strlen(indentString)-2);
-					indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-					fprintf(xmlFile, "%s</classVarDec>\n", indentString);
+					//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
+					//fprintf(xmlFile, "%s</classVarDec>\n", indentString);
 					break;
 				}
 				else if(symbol() == ',')
 				{
-					fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
+					//fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
 					if(!hasMoreTokens()) //check for variable name token
 					{
 						printf("token variable name not found at line %d\n", currentToken->line);
@@ -247,7 +247,7 @@ void compileClassVarDec()
 					advance(); //get the next variable name token 
 					if(tokenType() == IDENTIFIER)
 					{
-						fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+						//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 						strcpy(nameOfVar, identifier());
 						//we got the name call define
 						define(nameOfVar, typeOfVar, kindOfVar);
