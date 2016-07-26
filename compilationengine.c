@@ -7,8 +7,6 @@
 #include "compilationengine.h"
 void constructorCompilationEngine(char *fileName)
 {
-	//TODO: As check for filename extenstion .asm
-	xmlFile = fopen ( fileName, "w" );
 	//reset className, functionName buffer
 	memset(className, 0, 100); 
 	memset(functionName, 0, 100);
@@ -17,16 +15,6 @@ void constructorCompilationEngine(char *fileName)
 	isVoid = 0; //return type of function 0 = not void, 1 = void
 	loopIfIndex = 0; //index for unique while or if command label
 	functionType = 0; //if subroutine is constructor 0 = Not, 1 = Is Constuctor
-	//fprintf(xmlFile, "XML Content for file %s\n", fileName);
-	//incrementer = 0;
-	//temp stuff
-	//memset(currentFunction,0,50);
-	//strcpy(currentFunction,"dummy");
-	//temp stuff end
-	//if ( asmFile == NULL )
-	//{
-    //  perror(fileName);
-    //}
 }
 void compileClass()
 {
@@ -1807,7 +1795,8 @@ void compileExpression()
 void compileTerm()
 {
 	char functionCallName[200], objectName[100], tempBuff[100];
-	char *objectClass;
+	char *objectClass, *strVal;
+	int i;
 	memset(functionCallName, 0, 200);
 	memset(objectName, 0, 100);
 	memset(tempBuff, 0, 100);
@@ -1820,6 +1809,14 @@ void compileTerm()
 	}
 	else if(tokenType() == STRING_CONST) //string constant
 	{
+		strVal = stringVal();
+		writePush(CONST_SEG, strlen(strVal));
+		writeCall("String.new", 1);
+		for(i=0;i<strlen(strVal);i++)
+		{
+			writePush(CONST_SEG, strVal[i]);
+			writeCall("String.appendChar", 2);
+		}
 		//fprintf(xmlFile, "%s<stringConstant> %s </stringConstant>\n", indentString, stringVal());
 	}
 	else if(tokenType() == KEYWORD) //keyword constant
