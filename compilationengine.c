@@ -266,6 +266,7 @@ void compileSubroutine()
 	isVoid = 0;
 	functionType = 0; //by default functionType is for function subroutine
 	memset(vmFunctionName, 0, 200); //reset vmFunctionName
+	startSubroutine();
 	if(tokenType() == KEYWORD)
 	{
 		switch(keyWord())
@@ -274,7 +275,8 @@ void compileSubroutine()
 				functionType = 1;
 				break;
 			case METHOD:
-				functionType = 2; 
+				functionType = 2;
+				argIndex++; //increment argIndex to account for pushing object as first argument
 				break;
 			case FUNCTION:
 				break;
@@ -289,7 +291,7 @@ void compileSubroutine()
 	}
 	//we have come so far so it must be a subroutine Decleration
 	//here we can safely start a new subroutine symbol table
-	startSubroutine();
+	
 	//check for syntatic correctness and exit program if some errors are found
 	//check for 'type' token code block
 	if(!hasMoreTokens()) 
