@@ -18,7 +18,6 @@ void constructorCompilationEngine()
 }
 void compileClass()
 {
-	//memset(indentString, 0, 100);
 	if(!hasMoreTokens()) //if block for class keyword
 	{
 		printf("Could not find class keyword at start of file\n");
@@ -32,10 +31,6 @@ void compileClass()
 			printf("Could not find class keyword at start of file\n");
 			return; //or may be exit
 		}
-		//write here to vm file <class> tag here
-		//fprintf(xmlFile, "<class>\n");
-		//strcat(indentString, "  ");//increase indentation
-		//fprintf(xmlFile, "%s<keyword> class </keyword>\n", indentString);
 	}
 	
 	if(!hasMoreTokens()) //if block for class name identifier
@@ -53,7 +48,6 @@ void compileClass()
 		}
 		//write here to vm file name identifier tag <identifier> className </identifer>
 		strcpy(className, identifier()); //get the class name
-		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 	}
 	
 	if(!hasMoreTokens()) //if block for '{' symbol
@@ -69,15 +63,13 @@ void compileClass()
 			printf("Could not find symbol '{' after class decleration\n");
 			return;
 		}
-		//write here to vm file for symbol { tag <symbol> { </symbol>
-		//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	compileClassVarDec(); //compile class variable decleration
 	//we should have now class symbol table ready so display it
-	printf("-------------------------------------------------\n");
-	printf("Displaying Class symbol table\n");
-	displaySymbolTable(0);
-	printf("-------------------------------------------------\n");
+	//printf("-------------------------------------------------\n");
+	//printf("Displaying Class symbol table\n");
+	//displaySymbolTable(0);
+	//printf("-------------------------------------------------\n");
 	/////////////////////////////
 	compileSubroutine(); //compile class subroutines
 	
@@ -88,10 +80,6 @@ void compileClass()
 		printf("Could not find symbol '}' for class decleration\n");
 		return;
 	}
-	//write here to vm file for symbol } tag <symbol> } </symbol>
-	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
-	//finally write a ending class tag </class>
-	//fprintf(xmlFile, "</class>");
 }
 void compileClassVarDec()
 {
@@ -112,15 +100,9 @@ void compileClassVarDec()
 			switch(keyWord())
 			{
 				case STATIC:
-					//fprintf(xmlFile, "%s<classVarDec>\n", indentString);
-					//strcat(indentString, "  "); //increase the indent
-					//fprintf(xmlFile, "%s<keyword> static </keyword>\n", indentString);
 					kindOfVar = STATIC_SMBL;
 					break;
 				case FIELD:
-					//fprintf(xmlFile, "%s<classVarDec>\n", indentString);
-					//strcat(indentString, "  ");
-					//fprintf(xmlFile, "%s<keyword> field </keyword>\n", indentString);
 					kindOfVar = FIELD_SMBL; 
 					break;
 				default:   //static or field keyword not found return to compileClass Method
@@ -150,15 +132,12 @@ void compileClassVarDec()
 			switch(keyWord())
 			{
 				case INT:
-					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
-					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
-					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
@@ -225,18 +204,13 @@ void compileClassVarDec()
 			while(1)
 			{
 				//first clear nameOfVar for define a new symbol
-				memset(nameOfVar, 0, 20);
+				memset(nameOfVar, 0, 100);
 				if(symbol() == ';')
 				{
-					//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
-					//strncpy(indentString, indentString, strlen(indentString)-2);
-					//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-					//fprintf(xmlFile, "%s</classVarDec>\n", indentString);
 					break;
 				}
 				else if(symbol() == ',')
 				{
-					//fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
 					if(!hasMoreTokens()) //check for variable name token
 					{
 						printf("token variable name not found at line %d\n", currentToken->line);
@@ -247,7 +221,6 @@ void compileClassVarDec()
 					advance(); //get the next variable name token 
 					if(tokenType() == IDENTIFIER)
 					{
-						//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 						strcpy(nameOfVar, identifier());
 						//we got the name call define
 						define(nameOfVar, typeOfVar, kindOfVar);
@@ -299,23 +272,13 @@ void compileSubroutine()
 		{
 			case CONSTRUCTOR:
 				functionType = 1;
-				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
-				//strcat(indentString, "  ");//increase the indent
-				//fprintf(xmlFile, "%s<keyword> constructor </keyword>\n", indentString);
 				break;
 			case METHOD:
-				functionType = 2;
-				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
-				//strcat(indentString, "  ");//increase the indent
-				//fprintf(xmlFile, "%s<keyword> function </keyword>\n", indentString); 
+				functionType = 2; 
 				break;
 			case FUNCTION:
-				//fprintf(xmlFile, "%s<subroutineDec>\n", indentString);
-				//strcat(indentString, "  ");//increase the indent
-				//fprintf(xmlFile, "%s<keyword> method </keyword>\n", indentString);
 				break;
 			default:   //static or field keyword not found return to compileClass Method
-				//printf("Not found any thing\n");
 				return;
 		}
 		
@@ -344,16 +307,12 @@ void compileSubroutine()
 			switch(keyWord())
 			{
 				case INT:
-					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					break;
 				case CHAR:
-					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					break;
 				case BOOLEAN:
-					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					break;
 				case VOID:
-					//fprintf(xmlFile, "%s<keyword> void </keyword>\n", indentString);
 					isVoid = 1;
 					break;
 				default: //not a valid keyword found in 'type' decleration
@@ -365,7 +324,7 @@ void compileSubroutine()
 		}
 		else if(tokenType() == IDENTIFIER)
 		{
-			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
+
 		}
 		else  //not found legal keyword or identifier in 'type' decleration
 		{
@@ -388,7 +347,6 @@ void compileSubroutine()
 		advance(); //get next token for subroutine name
 		if(tokenType() == IDENTIFIER)
 		{
-			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(functionName, identifier()); //get the function name
 		}
 		else //not a valid subroutine name token
@@ -414,7 +372,7 @@ void compileSubroutine()
 		advance(); //get next token for symbol '('
 		if(tokenType() == SYMBOL && symbol() == '(')
 		{
-			//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
+
 		}
 		else //not a valid subroutine name token
 		{
@@ -435,10 +393,7 @@ void compileSubroutine()
 		fclose(xmlFile);
 		exit(1);
 	}
-	//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 	//compile subroutine body
-	//fprintf(xmlFile, "%s<subroutineBody>\n", indentString);
-	//strcat(indentString, "  ");//increase the indent
 	//check for symbol '{' for start of subroutine body
 	if(!hasMoreTokens()) 
 	{
@@ -452,7 +407,6 @@ void compileSubroutine()
 		advance(); //get next token for symbol '{'
 		if(tokenType() == SYMBOL && symbol() == '{')
 		{
-			//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 		}
 		else //not a valid subroutine name token
 		{
@@ -465,10 +419,10 @@ void compileSubroutine()
 	//compile var decleration
 	compileVarDec();
 	//we should have now method symbol table ready so display it
-	printf("-------------------------------------------------\n");
-	printf("Displaying Method symbol table\n");
-	displaySymbolTable(1);
-	printf("-------------------------------------------------\n");
+	//printf("-------------------------------------------------\n");
+	//printf("Displaying Method symbol table\n");
+	//displaySymbolTable(1);
+	//printf("-------------------------------------------------\n");
 	/////////////////////////////////////////////////
 	//**here we should write functoin name nLocals to vm file as we 
 	//**should have by now total number of local in a function
@@ -487,11 +441,7 @@ void compileSubroutine()
 		writePop(POINTER_SEG, 0);
 	}
 	//compile statements
-	//fprintf(xmlFile, "%s<statements>\n", indentString);
-	//strcat(indentString, "  ");//increase the indent
 	compileStatements();
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</statements>\n", indentString);
 	//since next token has already been read by compileVarDec() or compileStatements so just
 	//check for symbol '}'
 	if(tokenType() != SYMBOL || symbol() != '}')
@@ -501,11 +451,6 @@ void compileSubroutine()
 		fclose(xmlFile);
 		exit(1);
 	}
-	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</subroutineBody>\n", indentString);
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</subroutineDec>\n", indentString);
 	//recussively call compileSubroutine
 	if(!hasMoreTokens())
 	{
@@ -526,7 +471,6 @@ void compileParameterList()
 	//variables used for define function in symbol table module
 	char nameOfVar[100];
 	char typeOfVar[100];
-	//kind kindOfVar;
 	//make sure to reduce the indent before returning
 	if(!hasMoreTokens()) 
 	{
@@ -543,21 +487,12 @@ void compileParameterList()
 			switch(keyWord())
 			{
 				case INT:
-					//fprintf(xmlFile, "%s<parameterList>\n", indentString);
-					//strcat(indentString, "  ");//increase the indent
-					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
-					//fprintf(xmlFile, "%s<parameterList>\n", indentString);
-					//strcat(indentString, "  ");//increase the indent
-					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
-					//fprintf(xmlFile, "%s<parameterList>\n", indentString);
-					//strcat(indentString, "  ");//increase the indent
-					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
@@ -569,16 +504,10 @@ void compileParameterList()
 		}
 		else if(tokenType() == IDENTIFIER) //type of some class name 'identifer'
 		{
-			//fprintf(xmlFile, "%s<parameterList>\n", indentString);
-			//strcat(indentString, "  ");//increase the indent
-			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(typeOfVar, identifier());
 		}
 		else if(tokenType() == SYMBOL && symbol() == ')') //we just found an empty parameter list
 		{
-			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-			//fprintf(xmlFile, "%s<parameterList>\n", indentString);
-			//fprintf(xmlFile, "%s</parameterList>\n", indentString);
 			return;
 		}
 		else  //not found legal keyword or identifier in 'type' decleration
@@ -602,10 +531,8 @@ void compileParameterList()
 		advance(); //get next token for variable name
 		if(tokenType() == IDENTIFIER)
 		{
-			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(nameOfVar, identifier());
 			define(nameOfVar, typeOfVar, ARG_SMBL);
-			//numOfLocals++; //increment number of locals for a function
 		}
 		else //not a valid variable name token
 		{
@@ -638,12 +565,8 @@ void compileParameterList()
 			switch(symbol())
 			{
 				case ')':
-					indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-					fprintf(xmlFile, "%s</parameterList>\n", indentString);
 					return;
-					//break;
 				case ',':
-					//fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
 					break;
 				default:
 					printf("Parameter decleration error at line %d\n", currentToken->line);
@@ -656,7 +579,7 @@ void compileParameterList()
 		{
 			printf("Parameter decleration error at line %d\n", currentToken->line);
 			freeToken();
-			//fclose(xmlFile);
+			fclose(xmlFile);
 			exit(1);
 		}
 		else
@@ -668,34 +591,30 @@ void compileParameterList()
 			switch(keyWord())
 			{
 				case INT:
-					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
-					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
-					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
 					printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
 					freeToken();
-					//fclose(xmlFile);
+					fclose(xmlFile);
 					exit(1);
 			}
 		}
 		else if(tokenType() == IDENTIFIER)
 		{
-			//fprintf(xmlFile, "%s<identifier> %s </identifer>\n", indentString, identifier());
 			strcpy(typeOfVar, identifier());
 		}
 		else
 		{
 			printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
 			freeToken();
-			//fclose(xmlFile);
+			fclose(xmlFile);
 			exit(1);
 		}
 		if(!hasMoreTokens()) // check for more token for identifier
@@ -712,16 +631,14 @@ void compileParameterList()
 		
 		if(tokenType() == IDENTIFIER)
 		{
-			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(nameOfVar, identifier());
 			define(nameOfVar, typeOfVar, ARG_SMBL);
-			//numOfLocals++;
 		}
 		else //not a valid variable name token
 		{
 			printf("token variable not found at line %d\n", currentToken->line);
 			freeToken();
-			//fclose(xmlFile);
+			fclose(xmlFile);
 			exit(1);
 		}
 	}
@@ -745,9 +662,6 @@ void compileVarDec()
 			switch(keyWord())
 			{
 				case VAR:
-					//fprintf(xmlFile, "%s<varDec>\n", indentString);
-					//strcat(indentString, "  "); //increase the indent
-					//fprintf(xmlFile, "%s<keyword> var </keyword>\n", indentString);
 					break;
 				default:   //var keyword not found return to compileSubroutine Method
 					return;
@@ -776,15 +690,12 @@ void compileVarDec()
 			switch(keyWord())
 			{
 				case INT:
-					//fprintf(xmlFile, "%s<keyword> int </keyword>\n", indentString);
 					strcpy(typeOfVar, "int");
 					break;
 				case CHAR:
-					//fprintf(xmlFile, "%s<keyword> char </keyword>\n", indentString);
 					strcpy(typeOfVar, "char");
 					break;
 				case BOOLEAN:
-					//fprintf(xmlFile, "%s<keyword> boolean </keyword>\n", indentString);
 					strcpy(typeOfVar, "boolean");
 					break;
 				default: //not a valid keyword found in 'type' decleration
@@ -796,7 +707,6 @@ void compileVarDec()
 		}
 		else if(tokenType() == IDENTIFIER)
 		{
-			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(typeOfVar, identifier());
 		}
 		else  //not found legal keyword or identifier in 'type' decleration
@@ -820,7 +730,6 @@ void compileVarDec()
 		advance(); //get next token for variable name
 		if(tokenType() == IDENTIFIER)
 		{
-			//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 			strcpy(nameOfVar, identifier());
 			define(nameOfVar, typeOfVar, VAR_SMBL);
 			numOfLocals++;
@@ -853,15 +762,10 @@ void compileVarDec()
 				memset(nameOfVar, 0, 100);
 				if(symbol() == ';')
 				{
-					//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
-					//strncpy(indentString, indentString, strlen(indentString)-2);
-					//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-					//fprintf(xmlFile, "%s</varDec>\n", indentString);
 					break;
 				}
 				else if(symbol() == ',')
 				{
-					//fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
 					if(!hasMoreTokens()) //check for variable name token
 					{
 						printf("token variable name not found at line %d\n", currentToken->line);
@@ -872,7 +776,6 @@ void compileVarDec()
 					advance(); //get the next variable name token 
 					if(tokenType() == IDENTIFIER)
 					{
-						//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 						strcpy(nameOfVar, identifier());
 						define(nameOfVar, typeOfVar, VAR_SMBL);
 						numOfLocals++;
@@ -957,9 +860,6 @@ void compileDo()
 {
 	//straight away write <doStatement> tag as it has been
 	//ready by compileStatments function
-	//fprintf(xmlFile, "%s<doStatement>\n", indentString);
-	//strcat(indentString, "  "); //increase the indent
-	//fprintf(xmlFile, "%s<keyword> do </keyword>\n", indentString);
 	//read next token which should be identifier
 	char functionCallName[200], objectName[100], tempBuff[100];
 	char *objectClass;
@@ -985,10 +885,8 @@ void compileDo()
 			fclose(xmlFile);
 			exit(1);
 		}
-		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 		//get the type of for current identifier to check if its object of some class
 		objectClass = typeOf(identifier());
-		//printf("objectClass %s\n", objectClass);
 		if(objectClass)//identifier is a name of object so its a method call
 		{
 			strcpy(functionCallName, objectClass);
@@ -1020,7 +918,6 @@ void compileDo()
 		}
 		if(symbol() == '.') //found '.' symbol its a call to Class.function() or object.method()
 		{
-			//fprintf(xmlFile, "%s<symbol> . </symbol>\n", indentString);
 			methodCallOnly = 0;
 			strcat(functionCallName, ".");
 			//read next token should be a identifier
@@ -1041,7 +938,6 @@ void compileDo()
 					fclose(xmlFile);
 					exit(1);
 				}
-				//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 				strcat(functionCallName, identifier());
 			}
 			//read next token and should be a '(' symbol
@@ -1075,7 +971,6 @@ void compileDo()
 				memset(functionCallName, 0, 200);
 				sprintf(functionCallName, "%s.%s", className, tempBuff); //make a method name as Class.method
 			}
-			//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 		}
 		else //use if(symbol != '(') to finish else block
 		{
@@ -1114,13 +1009,11 @@ void compileDo()
 	//next token should be ')'
 	if(tokenType() != SYMBOL || symbol() != ')')
 	{
-		//printf("Token: %s\n", currentToken->stringToken);
 		printf("expected a symbol ')' at line %d\n", currentToken->line);
 		freeToken();
 		fclose(xmlFile);
 		exit(1);
 	}
-	//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 	//subroutineCall Ends here
 	//read next token should be a symbol ';'
 	if(!hasMoreTokens())
@@ -1140,10 +1033,7 @@ void compileDo()
 			fclose(xmlFile);
 			exit(1);
 		}
-		//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
 	}
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</doStatement>\n", indentString);
 	writeCall(functionCallName, numOfParameter);
 	//discard the return value on stack by previous function call
 	writePop(TEMP_SEG, 0);	
@@ -1157,9 +1047,6 @@ void compileLet()
 	int isArray = 0; //variable to keep track if array assignment is present in let statement 0=No, 1=Yes 
 	char vName[100]; //name of variable
 	memset(vName, 0, 100); //reset varName buffer
-	//fprintf(xmlFile, "%s<letStatement>\n", indentString);
-	//strcat(indentString, "  "); //increase the indent
-	//fprintf(xmlFile, "%s<keyword> let </keyword>\n", indentString);
 	//read next token which should be identifier
 	if(!hasMoreTokens())
 	{
@@ -1178,7 +1065,6 @@ void compileLet()
 			fclose(xmlFile);
 			exit(1);
 		}
-		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 		strcpy(vName, identifier()); //copy identifer for later use
 	}
 	//read next token as symbol '[' or '='
@@ -1202,7 +1088,6 @@ void compileLet()
 		//code block for '[expression]'
 		if(symbol() == '[')
 		{
-			//fprintf(xmlFile, "%s<symbol> [ </symbol>\n", indentString);
 			isArray = 1;
 			compileExpression();
 			//add array start address to get desired memory location
@@ -1232,7 +1117,6 @@ void compileLet()
 				fclose(xmlFile);
 				exit(1);
 			}
-			//fprintf(xmlFile, "%s<symbol> ] </symbol>\n", indentString);
 			//read the next token '=' for next if block
 			if(!hasMoreTokens())
 			{
@@ -1249,7 +1133,7 @@ void compileLet()
 		//code block for symbol '='
 		if(symbol() == '=')
 		{
-			//fprintf(xmlFile, "%s<symbol> = </symbol>\n", indentString);
+
 		}
 		else
 		{
@@ -1295,20 +1179,13 @@ void compileLet()
 				writePop(LOCAL_SEG, indexOf(vName));
 				break;
 		}
-	}
-	
-	//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</letStatement>\n", indentString);		
+	}			
 }
 
 void compileWhile()
 {
 	//straight away write <whileStatement> tag as it has been
 	//ready by compileStatments function
-	//fprintf(xmlFile, "%s<whileStatement>\n", indentString);
-	//strcat(indentString, "  "); //increase the indent
-	//fprintf(xmlFile, "%s<keyword> while </keyword>\n", indentString);
 	//read next token should be a symbol '('
 	int localIndex = loopIfIndex++;
 	char loopLabel[100];
@@ -1332,7 +1209,6 @@ void compileWhile()
 			fclose(xmlFile);
 			exit(1);
 		}
-		//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 	}
 	//compile expression then
 	compileExpression();
@@ -1350,7 +1226,6 @@ void compileWhile()
 		fclose(xmlFile);
 		exit(1);
 	}
-	//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 	//read next token should be a symbol '{'
 	if(!hasMoreTokens())
 	{
@@ -1369,7 +1244,6 @@ void compileWhile()
 			fclose(xmlFile);
 			exit(1);
 		}
-		//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	//read next token and
 	//then compile statements in a while loop
@@ -1384,11 +1258,7 @@ void compileWhile()
 	{
 		advance(); 
 	}
-	//fprintf(xmlFile, "%s<statements>\n", indentString);
-	//strcat(indentString, "  ");//increase the indent
 	compileStatements();
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</statements>\n", indentString);
 	//since the next tokens as already ready by compileStatement()
 	//just check for symbol ;}'
 	if(tokenType() != SYMBOL || symbol() != '}')
@@ -1404,17 +1274,11 @@ void compileWhile()
 	memset(loopLabel, 0, 100);
 	sprintf(loopLabel, "WHILE_END_%d", localIndex);
 	writeLabel(loopLabel);
-	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</whileStatement>\n", indentString);
 }
 void compileReturn()
 {
 	//straight away write <ReturnStatement> tag as it has been
 	//ready by compileStatments function
-	//fprintf(xmlFile, "%s<returnStatement>\n", indentString);
-	//strcat(indentString, "  "); //increase the indent
-	//fprintf(xmlFile, "%s<keyword> return </keyword>\n", indentString);
 	//straight way call compileExpression
 	compileExpression();
 	//since next token has been read by compileExpression
@@ -1431,9 +1295,6 @@ void compileReturn()
 		writePush(CONST_SEG, 0);
 	}
 	writeReturn();
-	//fprintf(xmlFile, "%s<symbol> ; </symbol>\n", indentString);
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</returnStatement>\n", indentString);
 }
 void compileIf()
 {
@@ -1443,9 +1304,6 @@ void compileIf()
 	int localIndex = loopIfIndex++;
 	char ifLabel[100];
 	memset(ifLabel, 0, 100);
-	//fprintf(xmlFile, "%s<ifStatement>\n", indentString);
-	//strcat(indentString, "  "); //increase the indent
-	//fprintf(xmlFile, "%s<keyword> if </keyword>\n", indentString);
 	//read next token should be a symbol '('
 	if(!hasMoreTokens())
 	{
@@ -1482,7 +1340,6 @@ void compileIf()
 		fclose(xmlFile);
 		exit(1);
 	}
-	//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 	//read next token should be a symbol '{'
 	if(!hasMoreTokens())
 	{
@@ -1501,7 +1358,6 @@ void compileIf()
 			fclose(xmlFile);
 			exit(1);
 		}
-		//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	//read next token and
 	//then compile statements
@@ -1519,11 +1375,7 @@ void compileIf()
 	memset(ifLabel, 0, 100);
 	sprintf(ifLabel, "IF_TRUE_%d", localIndex);
 	writeLabel(ifLabel);
-	//fprintf(xmlFile, "%s<statements>\n", indentString);
-	//strcat(indentString, "  ");//increase the indent
 	compileStatements();
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</statements>\n", indentString);
 	//since the next tokens as already ready by compileStatement()
 	//just check for symbol }'
 	if(tokenType() != SYMBOL || symbol() != '}')
@@ -1533,8 +1385,6 @@ void compileIf()
 		fclose(xmlFile);
 		exit(1);
 	}
-	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
-	
 	//look for else block
 	//previousToken = currentToken;
 	if(!hasMoreTokens())
@@ -1551,20 +1401,13 @@ void compileIf()
 		//but we have also drive past on token also here try to fix it here
 		if(tokenType() != KEYWORD || keyWord() != ELSE) 
 		{
-			//printf("Else not found\n");
-			//printf("currentToken->str: %s, previousToken->str: %s\n", currentToken->stringToken, previousToken->stringToken);
-			//currentToken = previousToken;
-			//current->next = current;
 			current = currentToken;
-		//	indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-		//	fprintf(xmlFile, "%s</ifStatement>\n", indentString);
 			memset(ifLabel, 0, 100);
 			sprintf(ifLabel, "IF_FALSE_%d", localIndex);
 			writeLabel(ifLabel);
 			return;												
 		}
 	}
-	//fprintf(xmlFile, "%s<keyword> else </keyword>\n", indentString);
 	//read next token should be a symbol '{'
 	memset(ifLabel, 0, 100);
 	sprintf(ifLabel, "IF_END_%d", localIndex);
@@ -1589,7 +1432,6 @@ void compileIf()
 			fclose(xmlFile);
 			exit(1);
 		}
-		//fprintf(xmlFile, "%s<symbol> { </symbol>\n", indentString);
 	}
 	//read next token and
 	//then compile statements
@@ -1604,11 +1446,7 @@ void compileIf()
 	{
 		advance(); 
 	}
-	//fprintf(xmlFile, "%s<statements>\n", indentString);
-	//strcat(indentString, "  ");//increase the indent
 	compileStatements();
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</statements>\n", indentString);
 	//since the next tokens as already ready by compileStatement()
 	//just check for symbol }'
 	if(tokenType() != SYMBOL || symbol() != '}')
@@ -1621,9 +1459,6 @@ void compileIf()
 	memset(ifLabel, 0, 100);
 	sprintf(ifLabel, "IF_END_%d", localIndex);
 	writeLabel(ifLabel);
-	//fprintf(xmlFile, "%s<symbol> } </symbol>\n", indentString);
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-	//fprintf(xmlFile, "%s</ifStatement>\n", indentString);
 }
 void compileExpression()
 {
@@ -1642,10 +1477,6 @@ void compileExpression()
 		advance();
 		//this logic to accomadate expressionList & return statement
 		//and term '(' expression ')'
-		/*if(tokenType() == SYMBOL && symbol() == ')')
-		{
-			return;
-		}*/
 		if(tokenType() == SYMBOL)
 		{
 			switch(symbol())
@@ -1662,14 +1493,8 @@ void compileExpression()
 					break;
 			}
 		}
-		//fprintf(xmlFile, "%s<expression>\n", indentString);
-		//strcat(indentString, "  "); //increase the indent
-		//fprintf(xmlFile, "%s<term>\n", indentString);
 	}
-	//printf("In compileExpression function, before 1st compileTerm\n");
 	compileTerm();
-	//printf("In compileExpression function, after 1st compileTerm\n");
-	//fprintf(xmlFile, "%s</term>\n", indentString);
 	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 	//assuming that advance has already been called by compileTerm();
 	//look for the occurance of (op term)*
@@ -1680,59 +1505,40 @@ void compileExpression()
 			//next token is not of type 'op' so expression has ended and return;
 			//this is the only place from where we will exit the function
 			//so put ending tags here
-			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-			//fprintf(xmlFile, "%s</expression>\n", indentString);
-			//numOfParameter++;
 			return;
 		}
 		switch(symbol())
 		{
 			case '+':
-				//fprintf(xmlFile, "%s<symbol> + </symbol>\n", indentString);
 				commType = ADD;
 				break;
 			case '-':
-				//fprintf(xmlFile, "%s<symbol> - </symbol>\n", indentString);
 				commType = SUB;
 				break;
 			case '*':
-				//fprintf(xmlFile, "%s<symbol> * </symbol>\n", indentString);
 				mulOrDivide = 1;
 				break;
 			case '/':
-				//fprintf(xmlFile, "%s<symbol> / </symbol>\n", indentString);
 				mulOrDivide = 2;
 				break;
 			case '&'://use &amp;
-				//fprintf(xmlFile, "%s<symbol> &amp; </symbol>\n", indentString);
 				commType = AND;
 				break;
 			case '|':
-				//fprintf(xmlFile, "%s<symbol> | </symbol>\n", indentString);
 				commType = OR;
 				break;
 			case '<': //use &lt;
-				//fprintf(xmlFile, "%s<symbol> &lt; </symbol>\n", indentString);
 				commType = LT;
 				break;
 			case '>':
-				//fprintf(xmlFile, "%s<symbol> &gt; </symbol>\n", indentString);
 				commType = GT;
 				break;//use &gt;
 			case '=':
-				//fprintf(xmlFile, "%s<symbol> = </symbol>\n", indentString);
 				commType = EQ;
 				break;	
 			
 			default:
-				//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-				//fprintf(xmlFile, "%s</expression>\n", indentString);
-				//numOfParameter++;
 				return;
-				//printf("unknown 'op' type at line %d\n", currentToken->line);
-				//freeToken();
-				//fclose(xmlFile);
-				//exit(1);
 		}
 		if(!hasMoreTokens())
 		{
@@ -1744,13 +1550,7 @@ void compileExpression()
 		else
 		{
 			advance();
-			//strcat(indentString, "  "); //increase the indent
-			//fprintf(xmlFile, "%s<term>\n", indentString);
-			//printf("In compileExpression function, before 2nd compileTerm\n");
-			compileTerm();
-			//printf("In compileExpression function, after 2nd compileTerm\n");
-			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-			//fprintf(xmlFile, "%s</term>\n", indentString);	
+			compileTerm();	
 		}
 		//write 'op' command to vm file
 		if(mulOrDivide == 1) // write math.multiply function
@@ -1790,7 +1590,6 @@ void compileExpression()
 		}
 		
 	}
-	//advance(); //dangerous but just the temp stuff
 }
 void compileTerm()
 {
@@ -1801,11 +1600,9 @@ void compileTerm()
 	memset(objectName, 0, 100);
 	memset(tempBuff, 0, 100);
 	
-	//strcat(indentString, "  "); //increase the indent
 	if(tokenType() == INT_CONST) //int constant
 	{
 		writePush(CONST_SEG, intVal());
-		//fprintf(xmlFile, "%s<integerConstant> %d </integerConstant>\n", indentString, intVal());
 	}
 	else if(tokenType() == STRING_CONST) //string constant
 	{
@@ -1817,27 +1614,22 @@ void compileTerm()
 			writePush(CONST_SEG, strVal[i]);
 			writeCall("String.appendChar", 2);
 		}
-		//fprintf(xmlFile, "%s<stringConstant> %s </stringConstant>\n", indentString, stringVal());
 	}
 	else if(tokenType() == KEYWORD) //keyword constant
 	{
 		switch(keyWord())
 		{
 			case TRUE:
-				//fprintf(xmlFile, "%s<keyword> true </keyword>\n", indentString);
 				writePush(CONST_SEG, 0);
 				writeArithmetic(NOT);
 				break;
 			case FALSE:
-				//fprintf(xmlFile, "%s<keyword> false </keyword>\n", indentString);
 				writePush(CONST_SEG, 0);
 				break;
 			case NULL_KEYWORD:
-				//fprintf(xmlFile, "%s<keyword> null </keyword>\n", indentString);
 				writePush(CONST_SEG, 0);
 				break;
 			case THIS:
-				//fprintf(xmlFile, "%s<keyword> this </keyword>\n", indentString);
 				writePush(POINTER_SEG, 0);
 				break;
 			default:
@@ -1849,8 +1641,6 @@ void compileTerm()
 	}
 	else if(tokenType() == IDENTIFIER) //it may be a varName | varName'['expression']' | subroutineCall
 	{
-		//numOfParameter = 0;
-		//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 		strcpy(functionCallName, identifier());
 		if(!hasMoreTokens())
 		{
@@ -1867,7 +1657,6 @@ void compileTerm()
 		{
 			if(symbol() == '[') //process varName '['expression']'
 			{
-				//fprintf(xmlFile, "%s<symbol> [ </symbol>\n", indentString);
 				compileExpression();
 				switch(kindOf(functionCallName))
 				{
@@ -1898,11 +1687,9 @@ void compileTerm()
 					fclose(xmlFile);
 					exit(1);
 				}
-				//fprintf(xmlFile, "%s<symbol> ] </symbol>\n", indentString);
 			}
 			else if(symbol() == '(') //process subroutineName'(' expressionList ')'
 			{
-				//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 				numOfParameter = 0;
 				numOfParameter++;
 				writePush(POINTER_SEG, 0);
@@ -1919,28 +1706,19 @@ void compileTerm()
 					fclose(xmlFile);
 					exit(1);
 				}
-				//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 				writeCall(functionCallName, numOfParameter);
 			}
 			else if(symbol() == '.') //process className|varName.subroutineName '(' expressionList ')'
 			{
-				//fprintf(xmlFile, "%s<symbol> . </symbol>\n", indentString);
 				//get the type of from buffer functionCallName to check if its object of some class
 				numOfParameter = 0;
 				objectClass = typeOf(functionCallName);
-				//printf("objectClass %s\n", objectClass);
 				if(objectClass)//identifier is a name of object so its a method call
 				{
 					strcpy(objectName, functionCallName);
 					memset(functionCallName, 0, 200);
 					strcpy(functionCallName, objectClass);
-					//strcat(functionCallName, objectClass);
-					
 				}
-				/*else //its a call to some class function or constructor
-				{
-					strcat(functionCallName, identifier());
-				}*/
 				strcat(functionCallName, ".");
 				if(!hasMoreTokens()) //read subRoutineName
 				{
@@ -1960,7 +1738,6 @@ void compileTerm()
 					fclose(xmlFile);
 					exit(1);
 				}
-				//fprintf(xmlFile, "%s<identifier> %s </identifier>\n", indentString, identifier());
 				strcat(functionCallName, identifier());
 				//read symbol '('
 				if(!hasMoreTokens())
@@ -1981,7 +1758,6 @@ void compileTerm()
 					fclose(xmlFile);
 					exit(1);
 				}
-				//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 				if(objectClass) //its a call to objects method
 				{
 					numOfParameter++; //increment number of paramenter for pushing object
@@ -2014,7 +1790,6 @@ void compileTerm()
 					fclose(xmlFile);
 					exit(1);
 				}
-				//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 				writeCall(functionCallName, numOfParameter);
 				free(objectClass);
 				
@@ -2037,17 +1812,15 @@ void compileTerm()
 						writePush(LOCAL_SEG, indexOf(functionCallName));
 						break;
 				}
-				//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 				return;
 			}
 		}
 	}
-	else if(tokenType() == SYMBOL)// && symbol() == '(') //'(' expression ')'
+	else if(tokenType() == SYMBOL) //'(' expression ')'
 	{
 		switch(symbol())
 		{
 			case '(':
-				//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
 				compileExpression();
 				//since the next token must have been read by compileExpression() just check for ')' character
 				if(tokenType() != SYMBOL || symbol() != ')')
@@ -2058,10 +1831,8 @@ void compileTerm()
 					fclose(xmlFile);
 					exit(1);
 				}
-				//fprintf(xmlFile, "%s<symbol> ) </symbol>\n", indentString);
 				break;
 			case '~':
-				//fprintf(xmlFile, "%s<symbol> ~ </symbol>\n", indentString);
 				if(!hasMoreTokens()) //advance for compileTerm
 				{
 					printf("expected a term at line %d\n", currentToken->line);
@@ -2073,15 +1844,10 @@ void compileTerm()
 				{
 					advance();
 				}
-				//strcat(indentString, "  "); //increase the indent
-				//fprintf(xmlFile, "%s<term>\n", indentString);
 				compileTerm();
 				writeArithmetic(NOT);
-				//fprintf(xmlFile, "%s</term>\n", indentString);
-				//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 				return;
 			case '-':
-				//fprintf(xmlFile, "%s<symbol> - </symbol>\n", indentString);
 				if(!hasMoreTokens()) //advance for compileTerm
 				{
 					printf("expected a term at line %d\n", currentToken->line);
@@ -2093,12 +1859,8 @@ void compileTerm()
 				{
 					advance();
 				}
-				//strcat(indentString, "  "); //increase the indent
-				//fprintf(xmlFile, "%s<term>\n", indentString);
 				compileTerm();
 				writeArithmetic(NEG);
-				//fprintf(xmlFile, "%s</term>\n", indentString);
-				//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 				return;
 			default:
 				printf("unknown term format at line %d\n", currentToken->line);
@@ -2119,42 +1881,26 @@ void compileTerm()
 	{
 		advance();
 	}
-	//advance();//temp stuff
-	//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
 }
 void compileExpressionList()
 {
-	//numOfParameter = 0;
-	//fprintf(xmlFile, "%s<expressionList>\n", indentString);
-	//strcat(indentString, "  "); //increase the indent
-	/*if(tokenType() == SYMBOL && symbol() == ')')
-	{
-		indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-		fprintf(xmlFile, "%s</expressionList>\n", indentString);
-		return;
-	}*/
 	/* Below is a desi jugad for incrementing number of numOfParameters
 	* as some of the logic of empty expressionList lies in functoin
 	* compileExpression
 	*/
 	numOfParameter++;
 	compileExpression();
-	//numOfParameter++;
 	while(1)
 	{
 		if(tokenType() != SYMBOL || symbol() != ',')
 		{
-			//indentString[strlen(indentString)-2] = '\0'; //decrease the indent
-			//fprintf(xmlFile, "%s</expressionList>\n", indentString);
 			return;
 		}
-		//fprintf(xmlFile, "%s<symbol> , </symbol>\n", indentString);
 		/* Below is a desi jugad for incrementing number of numOfParameters
 		 * as some of the logic of empty expressionList lies in functoin
 		 * compileExpression
 		 */
 		numOfParameter++;
 		compileExpression();
-		//numOfParameter++;
 	}
 }
