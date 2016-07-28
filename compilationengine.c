@@ -121,7 +121,7 @@ void compileClassVarDec()
 	{
 		printf("token 'type' not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -143,7 +143,7 @@ void compileClassVarDec()
 				default: //not a valid keyword found in 'type' decleration
 					printf("Variable declareation unknown 'type' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 			}
 		}
@@ -157,7 +157,7 @@ void compileClassVarDec()
 		{
 			printf("Variable declareation unknown type at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -166,7 +166,7 @@ void compileClassVarDec()
 	{
 		printf("token variable name not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -181,7 +181,7 @@ void compileClassVarDec()
 		{
 			printf("token variable not found at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -193,7 +193,7 @@ void compileClassVarDec()
 	{
 		printf("terminating symbol ';' or ',' not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -215,7 +215,7 @@ void compileClassVarDec()
 					{
 						printf("token variable name not found at line %d\n", currentToken->line);
 						freeToken();
-						fclose(xmlFile);
+						
 						exit(1);
 					}
 					advance(); //get the next variable name token 
@@ -229,7 +229,7 @@ void compileClassVarDec()
 					{
 						printf("token variable not found at line %d\n", currentToken->line);
 						freeToken();
-						fclose(xmlFile);
+						
 						exit(1);
 					}	
 				}
@@ -237,7 +237,7 @@ void compileClassVarDec()
 				{
 					printf("terminating symbol ';' or ',' not found at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				else
@@ -250,7 +250,7 @@ void compileClassVarDec()
 		{
 			printf("terminating symbol ';' or ',' not found at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -298,7 +298,7 @@ void compileSubroutine()
 	{
 		printf("token 'type' not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -320,7 +320,7 @@ void compileSubroutine()
 				default: //not a valid keyword found in 'type' decleration
 					printf("Return 'type' unknown at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 			}
 		}
@@ -332,7 +332,7 @@ void compileSubroutine()
 		{
 			printf("Return 'type' unknown at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -341,7 +341,7 @@ void compileSubroutine()
 	{
 		printf("token subroutine name not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -355,7 +355,7 @@ void compileSubroutine()
 		{
 			printf("invalid subroutine name at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -366,7 +366,7 @@ void compileSubroutine()
 	{
 		printf("expected symbol '(' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -380,7 +380,7 @@ void compileSubroutine()
 		{
 			printf("expected symbol '(' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -392,7 +392,7 @@ void compileSubroutine()
 	{
 		printf("expected symbol ')' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	//compile subroutine body
@@ -401,7 +401,7 @@ void compileSubroutine()
 	{
 		printf("expected symbol '{' at line for subroutine body %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -414,7 +414,7 @@ void compileSubroutine()
 		{
 			printf("expected symbol '{' at line for subroutine body %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -450,7 +450,7 @@ void compileSubroutine()
 	{
 		printf("expected symbol '}' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	//recussively call compileSubroutine
@@ -458,7 +458,7 @@ void compileSubroutine()
 	{
 		printf("expected symbol '}' for class decleration\n");
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -478,7 +478,7 @@ void compileParameterList()
 	{
 		printf("expected return 'type' or symbol ')' for paramenter list at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -500,7 +500,7 @@ void compileParameterList()
 				default: //not a valid keyword found in 'type' decleration
 					printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 			}
 		}
@@ -516,7 +516,7 @@ void compileParameterList()
 		{
 			printf("Variable declareation unknown type at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -525,7 +525,7 @@ void compileParameterList()
 	{
 		printf("token variable name not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -540,7 +540,7 @@ void compileParameterList()
 		{
 			printf("token variable not found at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -551,7 +551,7 @@ void compileParameterList()
 		{
 			printf("Parameter decleration error at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		else
@@ -573,7 +573,7 @@ void compileParameterList()
 				default:
 					printf("Parameter decleration error at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 			}
 		}
@@ -581,7 +581,7 @@ void compileParameterList()
 		{
 			printf("Parameter decleration error at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		else
@@ -604,7 +604,7 @@ void compileParameterList()
 				default: //not a valid keyword found in 'type' decleration
 					printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 			}
 		}
@@ -616,14 +616,14 @@ void compileParameterList()
 		{
 			printf("Parameter list declareation unknown 'type' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		if(!hasMoreTokens()) // check for more token for identifier
 		{
 			printf("Parameter decleration error at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		else
@@ -640,7 +640,7 @@ void compileParameterList()
 		{
 			printf("token variable not found at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -681,7 +681,7 @@ void compileVarDec()
 	{
 		printf("token 'type' not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -703,7 +703,7 @@ void compileVarDec()
 				default: //not a valid keyword found in 'type' decleration
 					printf("Variable declareation unknown 'type' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 			}
 		}
@@ -715,7 +715,7 @@ void compileVarDec()
 		{
 			printf("Variable declareation unknown type at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -724,7 +724,7 @@ void compileVarDec()
 	{
 		printf("token variable name not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -740,7 +740,7 @@ void compileVarDec()
 		{
 			printf("token variable not found at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -750,7 +750,7 @@ void compileVarDec()
 	{
 		printf("terminating symbol ';' or ',' not found at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -772,7 +772,7 @@ void compileVarDec()
 					{
 						printf("token variable name not found at line %d\n", currentToken->line);
 						freeToken();
-						fclose(xmlFile);
+						
 						exit(1);
 					}
 					advance(); //get the next variable name token 
@@ -786,7 +786,7 @@ void compileVarDec()
 					{
 						printf("token variable not found at line %d\n", currentToken->line);
 						freeToken();
-						fclose(xmlFile);
+						
 						exit(1);
 					}	
 				}
@@ -794,7 +794,7 @@ void compileVarDec()
 				{
 					printf("terminating symbol ';' or ',' not found at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				else
@@ -807,7 +807,7 @@ void compileVarDec()
 		{
 			printf("terminating symbol ';' or ',' not found at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -848,7 +848,7 @@ void compileStatements()
 	{
 		printf("expected symbol '}' for subroutine decleration\n");
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -874,7 +874,7 @@ void compileDo()
 	{
 		printf("expected an identifier at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -884,7 +884,7 @@ void compileDo()
 		{
 			printf("expected an identifier at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		//get the type of for current identifier to check if its object of some class
@@ -905,7 +905,7 @@ void compileDo()
 	{
 		printf("expected a symbol '(' or '.' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -915,7 +915,7 @@ void compileDo()
 		{
 			printf("expected a symbol '(' or '.' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		if(symbol() == '.') //found '.' symbol its a call to Class.function() or object.method()
@@ -927,7 +927,7 @@ void compileDo()
 			{
 				printf("expected a identifier at line %d\n", currentToken->line);
 				freeToken();
-				fclose(xmlFile);
+				
 				exit(1);
 			}
 			else
@@ -937,7 +937,7 @@ void compileDo()
 				{
 					printf("expected an identifier at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				strcat(functionCallName, identifier());
@@ -948,7 +948,7 @@ void compileDo()
 			{
 				printf("expected a symbol '(' at line %d\n", currentToken->line);
 				freeToken();
-				fclose(xmlFile);
+				
 				exit(1);
 			}
 			else
@@ -958,7 +958,7 @@ void compileDo()
 				{
 					printf("expected a symbol '(' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 			}				
@@ -978,7 +978,7 @@ void compileDo()
 		{
 			printf("expected a symbol '(' or '.' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -1013,7 +1013,7 @@ void compileDo()
 	{
 		printf("expected a symbol ')' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	//subroutineCall Ends here
@@ -1022,7 +1022,7 @@ void compileDo()
 	{
 		printf("expected a symbol ';' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1032,7 +1032,7 @@ void compileDo()
 		{
 			printf("expected a symbol ';' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -1054,7 +1054,7 @@ void compileLet()
 	{
 		printf("expected an identifier at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1064,7 +1064,7 @@ void compileLet()
 		{
 			printf("expected an identifier at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		strcpy(vName, identifier()); //copy identifer for later use
@@ -1074,7 +1074,7 @@ void compileLet()
 	{
 		printf("expected a symbol '[' or '=' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1084,7 +1084,7 @@ void compileLet()
 		{
 			printf("expected a symbol '[' or '=' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		//code block for '[expression]'
@@ -1116,7 +1116,7 @@ void compileLet()
 			{
 				printf("expected a symbol ']' at line %d\n", currentToken->line);
 				freeToken();
-				fclose(xmlFile);
+				
 				exit(1);
 			}
 			//read the next token '=' for next if block
@@ -1124,7 +1124,7 @@ void compileLet()
 			{
 				printf("expected a symbol '=' at line %d\n", currentToken->line);
 				freeToken();
-				fclose(xmlFile);
+				
 				exit(1);
 			}
 			else
@@ -1141,7 +1141,7 @@ void compileLet()
 		{
 			printf("expected a symbol '=' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -1153,7 +1153,7 @@ void compileLet()
 		printf("Token: %s\n", currentToken->stringToken);
 		printf("expected a symbol ';' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	
@@ -1198,7 +1198,7 @@ void compileWhile()
 	{
 		printf("expected an symbol '(' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1208,7 +1208,7 @@ void compileWhile()
 		{
 			printf("expected an symbol '(' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -1225,7 +1225,7 @@ void compileWhile()
 	{
 		printf("expected a symbol ')' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	//read next token should be a symbol '{'
@@ -1233,7 +1233,7 @@ void compileWhile()
 	{
 		printf("expected an symbol '{' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1243,7 +1243,7 @@ void compileWhile()
 		{
 			printf("expected an symbol '{' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -1253,7 +1253,7 @@ void compileWhile()
 	{
 		printf("expected a statement or symbol '}' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1267,7 +1267,7 @@ void compileWhile()
 	{
 		printf("expected an symbol '}' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	memset(loopLabel, 0, 100);
@@ -1288,7 +1288,7 @@ void compileReturn()
 	{
 		printf("expected a symbol ';' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	//push constant 0 if return type is of type void
@@ -1311,7 +1311,7 @@ void compileIf()
 	{
 		printf("expected an symbol '(' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1321,7 +1321,7 @@ void compileIf()
 		{
 			printf("expected an symbol '(' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		//fprintf(xmlFile, "%s<symbol> ( </symbol>\n", indentString);
@@ -1339,7 +1339,7 @@ void compileIf()
 	{
 		printf("expected a symbol ')' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	//read next token should be a symbol '{'
@@ -1347,7 +1347,7 @@ void compileIf()
 	{
 		printf("expected an symbol '{' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1357,7 +1357,7 @@ void compileIf()
 		{
 			printf("expected an symbol '{' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -1367,7 +1367,7 @@ void compileIf()
 	{
 		printf("expected a statement or symbol '}' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1384,7 +1384,7 @@ void compileIf()
 	{
 		printf("expected an symbol '}' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	//look for else block
@@ -1393,7 +1393,7 @@ void compileIf()
 	{
 		printf("expected an symbol '}' or a statement at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1421,7 +1421,7 @@ void compileIf()
 	{
 		printf("expected an symbol '{' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1431,7 +1431,7 @@ void compileIf()
 		{
 			printf("expected an symbol '{' at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 	}
@@ -1441,7 +1441,7 @@ void compileIf()
 	{
 		printf("expected a statement or symbol '}' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1455,7 +1455,7 @@ void compileIf()
 	{
 		printf("expected an symbol '}' at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	memset(ifLabel, 0, 100);
@@ -1471,7 +1471,7 @@ void compileExpression()
 	{
 		printf("expression error at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else
@@ -1546,7 +1546,7 @@ void compileExpression()
 		{
 			printf("expression error at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		else
@@ -1637,7 +1637,7 @@ void compileTerm()
 			default:
 				printf("unknown keyword constant for term decleration at line %d\n", currentToken->line);
 				freeToken();
-				fclose(xmlFile);
+				
 				exit(1);
 		}
 	}
@@ -1648,7 +1648,7 @@ void compileTerm()
 		{
 			printf("expected ';' after term identifier at line %d\n", currentToken->line);
 			freeToken();
-			fclose(xmlFile);
+			
 			exit(1);
 		}
 		else
@@ -1686,7 +1686,7 @@ void compileTerm()
 					printf("Current token: %s\n", currentToken->stringToken);
 					printf("expected a symbol ']' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 			}
@@ -1705,7 +1705,7 @@ void compileTerm()
 					printf("Current token: %s\n", currentToken->stringToken);
 					printf("expected a symbol ')' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				writeCall(functionCallName, numOfParameter);
@@ -1726,7 +1726,7 @@ void compileTerm()
 				{
 					printf("expected identifier for subroutine name at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				else
@@ -1737,7 +1737,7 @@ void compileTerm()
 				{
 					printf("expected identifier for subroutine name at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				strcat(functionCallName, identifier());
@@ -1746,7 +1746,7 @@ void compileTerm()
 				{
 					printf("expected a symbol '(' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				else
@@ -1757,7 +1757,7 @@ void compileTerm()
 				{
 					printf("expected a symbol '(' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				if(objectClass) //its a call to objects method
@@ -1789,7 +1789,7 @@ void compileTerm()
 					printf("Current token: %s\n", currentToken->stringToken);
 					printf("expected a symbol ')' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				writeCall(functionCallName, numOfParameter);
@@ -1830,7 +1830,7 @@ void compileTerm()
 					printf("Current token: %s\n", currentToken->stringToken);
 					printf("expected a symbol ')' at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				break;
@@ -1839,7 +1839,7 @@ void compileTerm()
 				{
 					printf("expected a term at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				else
@@ -1854,7 +1854,7 @@ void compileTerm()
 				{
 					printf("expected a term at line %d\n", currentToken->line);
 					freeToken();
-					fclose(xmlFile);
+					
 					exit(1);
 				}
 				else
@@ -1868,7 +1868,7 @@ void compileTerm()
 				printf("unknown term format at line %d\n", currentToken->line);
 				printf("Symbol: %c\n", symbol());
 				freeToken();
-				fclose(xmlFile);
+				
 				exit(1);
 		}
 	}
@@ -1876,7 +1876,7 @@ void compileTerm()
 	{
 		printf("term advance error at line %d\n", currentToken->line);
 		freeToken();
-		fclose(xmlFile);
+		
 		exit(1);
 	}
 	else

@@ -31,18 +31,14 @@ void define(char *name, char *type, kind kindType)
 	{
 		case STATIC_SMBL:
 			currentEntry->indexSymbol = staticIndex++;
-			//staticIndex++;
 			break;
 		case FIELD_SMBL:
-			//fieldIndex++;
 			currentEntry->indexSymbol = fieldIndex++;
 			break;
 		case ARG_SMBL:
-			//argIndex++;
 			currentEntry->indexSymbol = argIndex++;
 			break;
 		case VAR_SMBL:
-			//varIndex++;
 			currentEntry->indexSymbol = varIndex++;
 			break;
 		default: //we may never possibly land in this code but just in case
